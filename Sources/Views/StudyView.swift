@@ -215,9 +215,15 @@ struct StudyView: View {
     private func rateCard(quality: ReviewQuality) {
         guard let card = currentCard else { return }
         
-        let progress = deckStore.getProgress(for: deck.id).getProgress(for: card.id)
-        let newProgress = SpacedRepetition.calculateNextReview(currentProgress: progress, quality: quality)
-        deckStore.updateCardProgress(newProgress, for: deck.id)
+        let deckId = deck.id
+        let cardId = card.id
+        
+        var deckProgress = deckStore.getProgress(for: deckId)
+        var cardProgress = deckProgress.getProgress(for: cardId)
+        
+        cardProgress = SpacedRepetition.calculateNextReview(currentProgress: cardProgress, quality: quality)
+        deckProgress.updateProgress(cardProgress)
+        deckStore.updateDeckProgress(deckProgress, for: deckId)
         
         moveToNextCard()
     }

@@ -109,6 +109,11 @@ final class DeckStore {
         save()
     }
     
+    func updateDeckProgress(_ progress: DeckProgress, for deckId: UUID) {
+        deckProgress[deckId] = progress
+        save()
+    }
+    
     func getCardsForReview(for deckId: UUID) -> [Card] {
         let progress = getProgress(for: deckId)
         guard let deck = decks.first(where: { $0.id == deckId }) else { return [] }
