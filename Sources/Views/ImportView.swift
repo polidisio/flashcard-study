@@ -1,71 +1,76 @@
 import SwiftUI
 import UniformTypeIdentifiers
-import Foundation
 
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var decks: [Deck]
     @State private var importedCards: [Card] = []
-    @State private var showingDeckPicker = false
+    @State private var showingFilePicker = false
     @State private var selectedDeckIndex = 0
     @State private var showingError = false
     @State private var errorMessage = ""
+    @State private var newDeckName = ""
+    @State private var showingNewDeckSheet = false
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                if importedCards.isEmpty {
-                    Image(systemName: "square.and.arrow.down")
-                        .font(.system(size: 60))
-                        .foregroundStyle(Color.gothicAccent)
-                    Text("Import Cards")
-                        .font(.title2)
-                    Text("Import flashcards from CSV files.\nFormat: front,back (first row is header)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
+                Image(systemName: "square.and.arrow.down")
+                    .font(.system(size: 60))
+                    .foregroundStyle(Color.gothicAccent)
+                
+                Text("Import Cards")
+                    .font(.title2)
+                
+                Text("Import flashcards from CSV files.\nFormat: front,back (first row is header)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                
+                Button {
+                    showingFilePicker = true
+                } label: {
+                    Label("Select CSV File", systemImage: "doc.text")
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Color.gothicAccent)
+                
+                if !importedCards.isEmpty {
+                    Divider()
                     
-                    Button {
-                        showingDeckPicker = true
-                    } label: {
-                        Label("Select CSV File", systemImage: "doc.text")
+                    Text("Imported \(importedCards.count) cards")
+                        .font(.headline)
+                        .foregroundStyle(Color.gothicAccent)
+                    
+                    List(importedCards) { card in
+                        VStack(alignment: .leading) {
+                            Text(card.front)
+                                .font(.headline)
+                            Text(card.back)
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .frame(height: 200)
+                    
+                    TextField("New deck name", text: $newDeckName)
+                        .textFieldStyle(.roundedBorder)
+                        .padding(.horizontal)
+                    
+                    Button("Create Deck with Cards") {
+                        if !newDeckName.isEmpty {
+                            var newDeck = Deck(name: newDeckName)
+                            newDeck.cards = importedCards
+                            decks.append(newDeck)
+                            dismiss()
+                        }
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(Color.gothicAccent)
-                } else {
-                    VStack(spacing: 16) {
-                        Text("Imported \(importedCards.count) cards")
-                            .font(.headline)
-                            .foregroundStyle(Color.gothicAccent)
-                        
-                        List {
-                            ForEach(importedCards) { card in
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(card.front)
-                                        .font(.headline)
-                                        .foregroundStyle(Color.gothicText)
-                                    Text(card.back)
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-                        }
-                        .frame(height: 300)
-                        
-                        HStack {
-                            Button("Cancel") {
-                                importedCards = []
-                            }
-                            .buttonStyle(.bordered)
-                            
-                            Button("Add to Deck") {
-                                addCardsToDeck()
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(Color.gothicAccent)
-                        }
-                    }
+                    .disabled(newDeckName.isEmpty)
                 }
+                
+                Spacer()
             }
             .padding()
             .background(Color.gothicBackground)
@@ -79,7 +84,7 @@ struct ImportView: View {
                 }
             }
             .fileImporter(
-                isPresented: $showingDeckPicker,
+                isPresented: $showingFilePicker,
                 allowedContentTypes: [.commaSeparatedText, .plainText],
                 allowsMultipleSelection: false
             ) { result in
@@ -90,7 +95,6 @@ struct ImportView: View {
             } message: {
                 Text(errorMessage)
             }
-            .sheet(isPresented: $showingDeckPicker) { }
         }
     }
     
@@ -100,7 +104,11 @@ struct ImportView: View {
             guard let url = urls.first else { return }
             
             let accessing = url.startAccessingSecurityScopedResource()
-            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+            defer { 
+                if accessing { 
+                    url.stopAccessingSecurityScopedResource() 
+                } 
+            }
             
             do {
                 let content = try String(contentsOf: url, encoding: .utf8)
@@ -165,17 +173,8 @@ struct ImportView: View {
         result.append(current)
         return result
     }
-    
-    private func addCardsToDeck() {
-        guard !decks.isEmpty else { return }
-        
-        let targetDeckIndex = selectedDeckIndex % decks.count
-        decks[targetDeckIndex].cards.append(contentsOf: importedCards)
-        importedCards = []
-        dismiss()
-    }
 }
 
 #Preview {
-    ImportView(decks: .constant([Deck(name: "Test Deck")]))
+    ImportView(decks: .constant([Deck(name: "Test")]))
 }
