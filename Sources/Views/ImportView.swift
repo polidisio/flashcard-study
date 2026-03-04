@@ -197,7 +197,7 @@ struct ImportView: View {
         try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: tempDir) }
         
-        let process = Process()
+        let process = Foundation.Process()
         process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
         process.arguments = ["-o", url.path, "-d", tempDir.path]
         try process.run()
