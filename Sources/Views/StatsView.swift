@@ -5,17 +5,21 @@ struct StatsView: View {
     @Environment(\.dismiss) var dismiss
     var deckStore: DeckStore
     @State private var showingResetAlert = false
+    @State private var refreshKey = 0
     
     private var deckStats: DeckStats {
-        deckStore.getDeckStats(for: deck.id)
+        refreshKey
+        return deckStore.getDeckStats(for: deck.id)
     }
     
     private var cardStats: [UUID: CardStats] {
-        deckStore.getAllCardStats(for: deck.id)
+        refreshKey
+        return deckStore.getAllCardStats(for: deck.id)
     }
     
     private var sortedCards: [Card] {
-        deck.cards.sorted { card1, card2 in
+        refreshKey
+        return deck.cards.sorted { card1, card2 in
             let stats1 = cardStats[card1.id] ?? CardStats()
             let stats2 = cardStats[card2.id] ?? CardStats()
             return stats1.timesStudied > stats2.timesStudied
@@ -42,10 +46,10 @@ struct StatsView: View {
                     Button("Done") { dismiss() }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button(role: .destructive) {
-                        showingResetAlert = true
+                    Button {
+                        refreshKey += 1
                     } label: {
-                        Image(systemName: "arrow.counterclockwise")
+                        Image(systemName: "arrow.clockwise")
                     }
                 }
             }
@@ -53,9 +57,13 @@ struct StatsView: View {
                 Button("Cancel", role: .cancel) { }
                 Button("Reset", role: .destructive) {
                     deckStore.resetStats(for: deck.id)
+                    refreshKey += 1
                 }
             } message: {
                 Text("Are you sure you want to reset all statistics for this deck? This action cannot be undone.")
+            }
+            .onAppear {
+                refreshKey += 1
             }
         }
     }
