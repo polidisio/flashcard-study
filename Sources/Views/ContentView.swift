@@ -1,15 +1,17 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var decks: [Deck] = []
+    @Environment(DeckStore.self) private var deckStore
     @State private var showingAddDeck = false
     @State private var showingImport = false
     @State private var selectedDeckIndex: Int? = nil
+    @State private var editingDeckIndex: Int? = nil
+    @State private var editingDeckName: String = ""
     
     var body: some View {
         NavigationStack {
             List {
-                ForEach(Array(decks.enumerated()), id: \.element.id) { index, deck in
+                ForEach(Array(deckStore.decks.enumerated()), id: \.element.id) { index, deck in
                     Button {
                         selectedDeckIndex = index
                     } label: {
@@ -28,8 +30,18 @@ struct ContentView: View {
                         }
                     }
                     .listRowBackground(Color.gothicCard)
+                    .contextMenu {
+                        Button {
+                            editingDeckIndex = index
+                            editingDeckName = deck.name
+                        } label: {
+                            Label("Rename", systemImage: "pencil")
+                        }
+                    }
                 }
-                .onDelete(perform: deleteDeck)
+                .onDelete { offsets in
+                    deckStore.deleteDeck(at: offsets)
+                }
             }
             .listStyle(.plain)
             .background(Color.gothicBackground)
@@ -53,31 +65,70 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showingAddDeck) {
-                AddDeckView(decks: $decks)
+                AddDeckView()
             }
             .sheet(isPresented: $showingImport) {
-                ImportView(decks: $decks)
+                ImportView()
             }
             .sheet(item: Binding(
                 get: { selectedDeckIndex.map { IndexItem(index: $0) } },
                 set: { selectedDeckIndex = $0?.index }
             )) { item in
-                if item.index < decks.count {
-                    StudyView(deck: $decks[item.index])
+                if item.index < deckStore.decks.count {
+                    StudyView(deck: deckStore.decks[item.index])
                 }
             }
-            .onAppear {
-                if decks.isEmpty {
-                    decks = SampleDecks.createAllDecks()
+            .sheet(item: Binding(
+                get: { editingDeckIndex.map { EditDeckItem(index: $0, name: deckStore.decks[$0].name) } },
+                set: { editingDeckIndex = $0?.index }
+            )) { item in
+                EditDeckNameView(
+                    deckName: $editingDeckName,
+                    onSave: {
+                        if let index = editingDeckIndex {
+                            deckStore.renameDeck(at: index, to: editingDeckName)
+                        }
+                        editingDeckIndex = nil
+                    },
+                    onCancel: {
+                        editingDeckIndex = nil
+                    }
+                )
+            }
+        }
+    }
+}
+
+struct EditDeckNameView: View {
+    @Binding var deckName: String
+    var onSave: () -> Void
+    var onCancel: () -> Void
+    
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section("Deck Name") {
+                    TextField("Enter deck name", text: $deckName)
+                }
+            }
+            .navigationTitle("Rename Deck")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { onCancel() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") { onSave() }
+                        .disabled(deckName.isEmpty)
                 }
             }
         }
-        .preferredColorScheme(.dark)
     }
-    
-    private func deleteDeck(at offsets: IndexSet) {
-        decks.remove(atOffsets: offsets)
-    }
+}
+
+struct EditDeckItem: Identifiable {
+    let id = UUID()
+    let index: Int
+    let name: String
 }
 
 struct IndexItem: Identifiable {

@@ -1,5 +1,6 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import CoreXLSX
 
 extension UTType {
     static var xlsx: UTType {
@@ -9,7 +10,7 @@ extension UTType {
 
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
-    @Binding var decks: [Deck]
+    @Environment(DeckStore.self) private var deckStore
     @State private var deckName = ""
     @State private var importedCards: [Card] = []
     @State private var showingFilePicker = false
@@ -117,18 +118,38 @@ struct ImportView: View {
         var cards: [Card] = []
         let lines = content.components(separatedBy: .newlines)
         
+        var delimiter: Character = ","
+        
+        if let firstLine = lines.first {
+            let semicolonCount = firstLine.filter { $0 == ";" }.count
+            let commaCount = firstLine.filter { $0 == "," }.count
+            let tabCount = firstLine.filter { $0 == "\t" }.count
+            
+            if semicolonCount > commaCount && semicolonCount >= tabCount {
+                delimiter = ";"
+            } else if tabCount > commaCount && tabCount > semicolonCount {
+                delimiter = "\t"
+            }
+        }
+        
         var start = 0
-        if let first = lines.first?.lowercased(), first.contains("front") {
+        if let first = lines.first?.lowercased(), first.contains("front") || first.contains("question") {
             start = 1
         }
         
         for line in lines.dropFirst(start) {
             let trimmed = line.trimmingCharacters(in: .whitespaces)
             guard !trimmed.isEmpty else { continue }
-            let parts = trimmed.components(separatedBy: ",")
+            
+            let parts = parseCSVLine(trimmed, delimiter: delimiter)
+            
             if parts.count >= 2 {
-                let front = parts[0].trimmingCharacters(in: .whitespaces)
-                let back = parts[1].trimmingCharacters(in: .whitespaces)
+                var front = parts[0].trimmingCharacters(in: .whitespaces)
+                var back = parts[1].trimmingCharacters(in: .whitespaces)
+                
+                front = front.trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
+                back = back.trimmingCharacters(in: CharacterSet(charactersIn: "\"'"))
+                
                 if !front.isEmpty && !back.isEmpty {
                     cards.append(Card(front: front, back: back))
                 }
@@ -137,58 +158,69 @@ struct ImportView: View {
         return cards
     }
     
+    private func parseCSVLine(_ line: String, delimiter: Character) -> [String] {
+        var result: [String] = []
+        var current = ""
+        var insideQuotes = false
+        
+        for char in line {
+            if char == "\"" {
+                insideQuotes.toggle()
+            } else if char == delimiter && !insideQuotes {
+                result.append(current)
+                current = ""
+            } else {
+                current.append(char)
+            }
+        }
+        result.append(current)
+        
+        return result
+    }
+    
     private func parseExcel(url: URL) throws -> [Card] {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
         
-        let data = try Data(contentsOf: url)
-        
-        guard let content = String(data: data, encoding: .utf8) else {
-            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot read file"])
+        guard let file = XLSXFile(filepath: url.path) else {
+            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot open Excel file"])
         }
         
         var cards: [Card] = []
         
-        // Find all <row> elements
-        let rowPattern = "<row[^>]*>(.*?)</row>"
-        guard let regex = try? NSRegularExpression(pattern: rowPattern, options: [.dotMatchesLineSeparators]) else {
-            return cards
-        }
-        
-        let range = NSRange(content.startIndex..., in: content)
-        let matches = regex.matches(in: content, options: [], range: range)
-        
-        for (index, match) in matches.enumerated() {
-            guard let rowRange = Range(match.range(at: 1), in: content) else { continue }
-            let rowContent = String(content[rowRange])
-            
-            var rowData: [String] = []
-            
-            // Find all cell values
-            let cellPattern = "<c[^>]*>(<is><t>(.*?)</t></is>|<v>(.*?)</v>)?</c>"
-            let cellRegex = try? NSRegularExpression(pattern: cellPattern, options: [.dotMatchesLineSeparators])
-            let cellRange = NSRange(rowContent.startIndex..., in: rowContent)
-            
-            if let cellMatches = cellRegex?.matches(in: rowContent, options: [], range: cellRange) {
-                for cellMatch in cellMatches {
-                    if let tRange = Range(cellMatch.range(at: 2), in: rowContent) {
-                        rowData.append(String(rowContent[tRange]))
-                    } else if let vRange = Range(cellMatch.range(at: 3), in: rowContent) {
-                        rowData.append(String(rowContent[vRange]))
+        for wbk in try file.parseWorkbooks() {
+            for (_, path) in try file.parseWorksheetPathsAndNames(workbook: wbk) {
+                let worksheet = try file.parseWorksheet(at: path)
+                let sharedStrings = try? file.parseSharedStrings()
+                
+                if let rows = worksheet.data?.rows {
+                    for (index, row) in rows.enumerated() {
+                        var rowData: [String] = []
+                        
+                        for cell in row.cells {
+                            var cellValue = ""
+                            
+                            if let stringValue = cell.stringValue(sharedStrings) {
+                                cellValue = stringValue
+                            } else if let value = cell.value {
+                                cellValue = value
+                            }
+                            
+                            rowData.append(cellValue)
+                        }
+                        
+                        if index == 0 && rowData.first?.lowercased().contains("front") == true {
+                            continue
+                        }
+                        
+                        if rowData.count >= 2 {
+                            let front = rowData[0].trimmingCharacters(in: .whitespaces)
+                            let back = rowData[1].trimmingCharacters(in: .whitespaces)
+                            if !front.isEmpty && !back.isEmpty {
+                                cards.append(Card(front: front, back: back))
+                            }
+                        }
                     }
-                }
-            }
-            
-            // Skip header row
-            if index == 0 && rowData.first?.lowercased().contains("front") == true {
-                continue
-            }
-            
-            if rowData.count >= 2 {
-                let front = rowData[0].trimmingCharacters(in: .whitespaces)
-                let back = rowData[1].trimmingCharacters(in: .whitespaces)
-                if !front.isEmpty && !back.isEmpty {
-                    cards.append(Card(front: front, back: back))
                 }
             }
         }
@@ -198,7 +230,7 @@ struct ImportView: View {
     
     private func importDeck() {
         let newDeck = Deck(name: deckName, cards: importedCards)
-        decks.append(newDeck)
+        deckStore.addDeck(newDeck)
         dismiss()
     }
 }

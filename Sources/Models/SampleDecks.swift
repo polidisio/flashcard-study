@@ -101,7 +101,7 @@ struct SampleDecks {
             Card(front: "¿Quién fue Alfonso X?", back: "Rey de Castilla que escribió las Cantigas de Santa María"),
             Card(front: "¿Qué es el Camino de Santiago?", back: "Ruta de peregrinación hacia la tumba del apóstol Santiago"),
             Card(front: "¿Qué son las 'horreos'?", back: "Graneros elevados típicos de la arquitectura gallega"),
-            Card(front: "¿Qué皇帝的 territorio incluía Galicia?", back: "Reino de Galicia en la Edad Media"),
+            Card(front: "¿Qué rey incluía Galicia en su territorio?", back: "Reino de Galicia en la Edad Media"),
         ]
     }
     

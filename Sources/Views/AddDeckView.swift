@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AddDeckView: View {
     @Environment(\.dismiss) var dismiss
-    @Binding var decks: [Deck]
+    @Environment(DeckStore.self) private var deckStore
     @State private var deckName = ""
     
     var body: some View {
@@ -20,7 +20,7 @@ struct AddDeckView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         if !deckName.isEmpty {
-                            decks.append(Deck(name: deckName))
+                            deckStore.addDeck(Deck(name: deckName))
                             dismiss()
                         }
                     }

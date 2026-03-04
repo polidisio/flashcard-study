@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct StudyView: View {
-    @Binding var deck: Deck
+    let deck: Deck
     @Environment(\.dismiss) var dismiss
+    @Environment(DeckStore.self) private var deckStore
     @State private var currentIndex = 0
     @State private var isFlipped = false
     @State private var rotation: Double = 0
@@ -10,16 +11,56 @@ struct StudyView: View {
     @State private var editingCard: Card?
     @State private var newFront = ""
     @State private var newBack = ""
+    @State private var editingFront = ""
+    @State private var editingBack = ""
+    @State private var editingCardId: UUID?
+    @State private var studyMode: StudyMode = .all
+    
+    enum StudyMode: String, CaseIterable {
+        case all = "All Cards"
+        case dueToday = "Due Today"
+    }
+    
+    private var currentDeck: Deck? {
+        deckStore.decks.first { $0.id == deck.id }
+    }
+    
+    private var cards: [Card] {
+        currentDeck?.cards ?? []
+    }
+    
+    private var studyCards: [Card] {
+        switch studyMode {
+        case .all:
+            return cards
+        case .dueToday:
+            return deckStore.getCardsForReview(for: deck.id)
+        }
+    }
+    
+    private var currentCard: Card? {
+        guard currentIndex < studyCards.count else { return nil }
+        return studyCards[currentIndex]
+    }
     
     var body: some View {
         NavigationStack {
-            if deck.cards.isEmpty {
+            if cards.isEmpty {
                 emptyStateView
             } else {
-                cardView
+                VStack(spacing: 0) {
+                    Picker("Study Mode", selection: $studyMode) {
+                        ForEach(StudyMode.allCases, id: \.self) { mode in
+                            Text(mode.rawValue).tag(mode)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .padding()
+                    
+                    cardView
+                }
             }
         }
-        .preferredColorScheme(.dark)
         .sheet(isPresented: $showingAddCard) {
             addCardSheet
         }
@@ -63,14 +104,14 @@ struct StudyView: View {
     
     private var cardView: some View {
         VStack(spacing: 30) {
-            Text("Card \(currentIndex + 1) of \(deck.cards.count)")
+            Text("Card \(currentIndex + 1) of \(studyCards.count)")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
             
-            if currentIndex < deck.cards.count {
+            if let card = currentCard {
                 CardFlipView(
-                    front: deck.cards[currentIndex].front,
-                    back: deck.cards[currentIndex].back,
+                    front: card.front,
+                    back: card.back,
                     isFlipped: $isFlipped,
                     rotation: $rotation
                 )
@@ -82,16 +123,24 @@ struct StudyView: View {
                 }
                 .contextMenu {
                     Button {
-                        editingCard = deck.cards[currentIndex]
+                        editingCard = card
                     } label: {
                         Label("Edit Card", systemImage: "pencil")
                     }
                     Button(role: .destructive) {
-                        deleteCard(at: currentIndex)
+                        deleteCard(card: card)
                     } label: {
                         Label("Delete Card", systemImage: "trash")
                     }
                 }
+            }
+            
+            if isFlipped {
+                reviewButtons
+            } else {
+                Text("Tap card to reveal answer")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
             
             navigationButtons
@@ -104,9 +153,9 @@ struct StudyView: View {
                 }
                 .buttonStyle(.bordered)
                 
-                if currentIndex < deck.cards.count {
+                if currentIndex < cards.count {
                     Button {
-                        editingCard = deck.cards[currentIndex]
+                        editingCard = cards[currentIndex]
                     } label: {
                         Label("Edit", systemImage: "pencil")
                     }
@@ -114,10 +163,6 @@ struct StudyView: View {
                 }
             }
             .padding(.top, 10)
-            
-            Text("Tap card to flip")
-                .font(.caption)
-                .foregroundStyle(.secondary)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -138,6 +183,60 @@ struct StudyView: View {
         }
     }
     
+    private var reviewButtons: some View {
+        HStack(spacing: 12) {
+            ForEach(ReviewQuality.allCases, id: \.rawValue) { quality in
+                Button {
+                    rateCard(quality: quality)
+                } label: {
+                    Text(quality.description)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 12)
+                        .background(buttonColor(for: quality))
+                        .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
+    
+    private func buttonColor(for quality: ReviewQuality) -> Color {
+        switch quality {
+        case .again: return .red
+        case .hard: return .orange
+        case .good: return .green
+        case .easy: return .blue
+        }
+    }
+    
+    private func rateCard(quality: ReviewQuality) {
+        guard let card = currentCard else { return }
+        
+        let progress = deckStore.getProgress(for: deck.id).getProgress(for: card.id)
+        let newProgress = SpacedRepetition.calculateNextReview(currentProgress: progress, quality: quality)
+        deckStore.updateCardProgress(newProgress, for: deck.id)
+        
+        moveToNextCard()
+    }
+    
+    private func moveToNextCard() {
+        withAnimation(.easeInOut(duration: 0.3)) {
+            isFlipped = false
+            rotation = 0
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            if currentIndex < studyCards.count - 1 {
+                currentIndex += 1
+            } else {
+                currentIndex = 0
+            }
+        }
+    }
+    
     private var navigationButtons: some View {
         HStack(spacing: 40) {
             Button { previousCard() } label: {
@@ -151,8 +250,8 @@ struct StudyView: View {
                 Image(systemName: "chevron.right.circle.fill")
                     .font(.system(size: 50))
             }
-            .disabled(currentIndex >= deck.cards.count - 1)
-            .foregroundStyle(currentIndex >= deck.cards.count - 1 ? Color.gray : Color.gothicAccent)
+            .disabled(currentIndex >= studyCards.count - 1)
+            .foregroundStyle(currentIndex >= studyCards.count - 1 ? Color.gray : Color.gothicAccent)
         }
     }
     
@@ -191,70 +290,91 @@ struct StudyView: View {
         NavigationStack {
             Form {
                 Section("Front (Question)") {
-                    TextField("Enter question", text: Binding(
-                        get: { card.front },
-                        set: { updateCard(card, front: $0) }
-                    ), axis: .vertical)
-                    .lineLimit(3...6)
+                    TextField("Enter question", text: $editingFront, axis: .vertical)
+                        .lineLimit(3...6)
                 }
                 Section("Back (Answer)") {
-                    TextField("Enter answer", text: Binding(
-                        get: { card.back },
-                        set: { updateCard(card, back: $0) }
-                    ), axis: .vertical)
-                    .lineLimit(3...6)
+                    TextField("Enter answer", text: $editingBack, axis: .vertical)
+                        .lineLimit(3...6)
                 }
             }
             .navigationTitle("Edit Card")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Done") {
+                        if let cardId = editingCardId {
+                            saveEditedCard(cardId: cardId)
+                        }
                         editingCard = nil
+                        editingCardId = nil
                     }
                 }
                 ToolbarItem(placement: .destructiveAction) {
                     Button("Delete") {
                         deleteCard(card: card)
                         editingCard = nil
+                        editingCardId = nil
                     }
                     .foregroundStyle(.red)
                 }
             }
+            .onAppear {
+                editingFront = card.front
+                editingBack = card.back
+                editingCardId = card.id
+            }
+        }
+    }
+    
+    private func saveEditedCard(cardId: UUID) {
+        guard let deckIndex = deckStore.decks.firstIndex(where: { $0.id == deck.id }) else { return }
+        if let cardIndex = deckStore.decks[deckIndex].cards.firstIndex(where: { $0.id == cardId }) {
+            deckStore.decks[deckIndex].cards[cardIndex].front = editingFront
+            deckStore.decks[deckIndex].cards[cardIndex].back = editingBack
+            deckStore.save()
         }
     }
     
     private func addCard() {
+        guard let index = deckStore.decks.firstIndex(where: { $0.id == deck.id }) else { return }
         let newCard = Card(front: newFront, back: newBack)
-        deck.cards.append(newCard)
+        deckStore.decks[index].cards.append(newCard)
+        deckStore.save()
         newFront = ""
         newBack = ""
         showingAddCard = false
     }
     
     private func updateCard(_ card: Card, front: String? = nil, back: String? = nil) {
-        if let index = deck.cards.firstIndex(where: { $0.id == card.id }) {
+        guard let deckIndex = deckStore.decks.firstIndex(where: { $0.id == deck.id }) else { return }
+        if let cardIndex = deckStore.decks[deckIndex].cards.firstIndex(where: { $0.id == card.id }) {
             if let front = front {
-                deck.cards[index].front = front
+                deckStore.decks[deckIndex].cards[cardIndex].front = front
             }
             if let back = back {
-                deck.cards[index].back = back
+                deckStore.decks[deckIndex].cards[cardIndex].back = back
             }
+            deckStore.save()
         }
     }
     
     private func deleteCard(card: Card) {
-        if let index = deck.cards.firstIndex(where: { $0.id == card.id }) {
-            deck.cards.remove(at: index)
-            if currentIndex >= deck.cards.count && currentIndex > 0 {
-                currentIndex = deck.cards.count - 1
+        guard let deckIndex = deckStore.decks.firstIndex(where: { $0.id == deck.id }) else { return }
+        if let index = deckStore.decks[deckIndex].cards.firstIndex(where: { $0.id == card.id }) {
+            deckStore.decks[deckIndex].cards.remove(at: index)
+            deckStore.save()
+            if currentIndex >= deckStore.decks[deckIndex].cards.count && currentIndex > 0 {
+                currentIndex = deckStore.decks[deckIndex].cards.count - 1
             }
         }
     }
     
     private func deleteCard(at index: Int) {
-        deck.cards.remove(at: index)
-        if currentIndex >= deck.cards.count && currentIndex > 0 {
-            currentIndex = deck.cards.count - 1
+        guard let deckIndex = deckStore.decks.firstIndex(where: { $0.id == deck.id }) else { return }
+        deckStore.decks[deckIndex].cards.remove(at: index)
+        deckStore.save()
+        if currentIndex >= deckStore.decks[deckIndex].cards.count && currentIndex > 0 {
+            currentIndex = deckStore.decks[deckIndex].cards.count - 1
         }
     }
     
@@ -264,7 +384,7 @@ struct StudyView: View {
             rotation = 0
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            if currentIndex < deck.cards.count - 1 {
+            if currentIndex < studyCards.count - 1 {
                 currentIndex += 1
             }
         }
@@ -277,6 +397,10 @@ struct StudyView: View {
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             if currentIndex > 0 {
+                currentIndex -= 1
+            }
+        }
+    }
                 currentIndex -= 1
             }
         }
@@ -326,8 +450,8 @@ struct CardFace: View {
 }
 
 #Preview {
-    StudyView(deck: .constant(Deck(name: "Test", cards: [
+    StudyView(deck: Deck(name: "Test", cards: [
         Card(front: "Q1", back: "A1"),
         Card(front: "Q2", back: "A2")
-    ])))
+    ]))
 }

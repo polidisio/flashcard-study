@@ -2,9 +2,12 @@ import SwiftUI
 
 @main
 struct FlashcardStudyApp: App {
+    @State private var deckStore = DeckStore()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(deckStore)
                 .preferredColorScheme(.dark)
         }
     }
