@@ -401,10 +401,6 @@ struct StudyView: View {
             }
         }
     }
-                currentIndex -= 1
-            }
-        }
-    }
 }
 
 struct CardFlipView: View {

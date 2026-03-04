@@ -1,6 +1,5 @@
 import SwiftUI
 import UniformTypeIdentifiers
-import CoreXLSX
 
 extension UTType {
     static var xlsx: UTType {
@@ -182,47 +181,56 @@ struct ImportView: View {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
         
-        guard let file = XLSXFile(filepath: url.path) else {
-            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot open Excel file"])
+        let data = try Data(contentsOf: url)
+        
+        guard let content = String(data: data, encoding: .utf8) else {
+            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot read file. Please export as CSV."])
         }
         
         var cards: [Card] = []
         
-        for wbk in try file.parseWorkbooks() {
-            for (_, path) in try file.parseWorksheetPathsAndNames(workbook: wbk) {
-                let worksheet = try file.parseWorksheet(at: path)
-                let sharedStrings = try? file.parseSharedStrings()
-                
-                if let rows = worksheet.data?.rows {
-                    for (index, row) in rows.enumerated() {
-                        var rowData: [String] = []
-                        
-                        for cell in row.cells {
-                            var cellValue = ""
-                            
-                            if let stringValue = cell.stringValue(sharedStrings) {
-                                cellValue = stringValue
-                            } else if let value = cell.value {
-                                cellValue = value
-                            }
-                            
-                            rowData.append(cellValue)
-                        }
-                        
-                        if index == 0 && rowData.first?.lowercased().contains("front") == true {
-                            continue
-                        }
-                        
-                        if rowData.count >= 2 {
-                            let front = rowData[0].trimmingCharacters(in: .whitespaces)
-                            let back = rowData[1].trimmingCharacters(in: .whitespaces)
-                            if !front.isEmpty && !back.isEmpty {
-                                cards.append(Card(front: front, back: back))
-                            }
-                        }
-                    }
+        let rowPattern = "<row[^>]*>(.*?)</row>"
+        guard let regex = try? NSRegularExpression(pattern: rowPattern, options: [.dotMatchesLineSeparators]) else {
+            return cards
+        }
+        
+        let range = NSRange(content.startIndex..., in: content)
+        let matches = regex.matches(in: content, options: [], range: range)
+        
+        for (index, match) in matches.enumerated() {
+            guard let rowRange = Range(match.range(at: 1), in: content) else { continue }
+            let rowContent = String(content[rowRange])
+            
+            var rowData: [String] = []
+            
+            let cellPattern = "<c[^>]*>(<is><t>(.*?)</t></is>|<v>(.*?)</v>)?</c>"
+            guard let cellRegex = try? NSRegularExpression(pattern: cellPattern, options: [.dotMatchesLineSeparators]) else { continue }
+            let cellRange = NSRange(rowContent.startIndex..., in: rowContent)
+            
+            let cellMatches = cellRegex.matches(in: rowContent, options: [], range: cellRange)
+            for cellMatch in cellMatches {
+                if let tRange = Range(cellMatch.range(at: 2), in: rowContent) {
+                    rowData.append(String(rowContent[tRange]))
+                } else if let vRange = Range(cellMatch.range(at: 3), in: rowContent) {
+                    rowData.append(String(rowContent[vRange]))
                 }
             }
+            
+            if index == 0 && rowData.first?.lowercased().contains("front") == true {
+                continue
+            }
+            
+            if rowData.count >= 2 {
+                let front = rowData[0].trimmingCharacters(in: .whitespaces)
+                let back = rowData[1].trimmingCharacters(in: .whitespaces)
+                if !front.isEmpty && !back.isEmpty {
+                    cards.append(Card(front: front, back: back))
+                }
+            }
+        }
+        
+        if cards.isEmpty {
+            throw NSError(domain: "Parse", code: 2, userInfo: [NSLocalizedDescriptionKey: "No cards found. Try exporting as CSV."])
         }
         
         return cards
