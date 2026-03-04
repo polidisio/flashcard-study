@@ -6,6 +6,10 @@ struct StudyView: View {
     @State private var currentIndex = 0
     @State private var isFlipped = false
     @State private var rotation: Double = 0
+    @State private var showingAddCard = false
+    @State private var editingCard: Card?
+    @State private var newFront = ""
+    @State private var newBack = ""
     
     var body: some View {
         NavigationStack {
@@ -16,6 +20,15 @@ struct StudyView: View {
             }
         }
         .preferredColorScheme(.dark)
+        .sheet(isPresented: $showingAddCard) {
+            addCardSheet
+        }
+        .sheet(item: Binding(
+                get: { editingCard },
+                set: { editingCard = $0 }
+            )) { card in
+            editCardSheet(card: card)
+        }
     }
     
     private var emptyStateView: some View {
@@ -25,8 +38,11 @@ struct StudyView: View {
                 .foregroundStyle(Color.gothicAccent)
             Text("No Cards in Deck")
                 .font(.title2)
-            Text("Add some cards to start studying")
-                .foregroundStyle(.secondary)
+            Button("Add First Card") {
+                showingAddCard = true
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(Color.gothicAccent)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.gothicBackground)
@@ -34,6 +50,13 @@ struct StudyView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Done") { dismiss() }
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingAddCard = true
+                } label: {
+                    Image(systemName: "plus")
+                }
             }
         }
     }
@@ -57,9 +80,40 @@ struct StudyView: View {
                         rotation += 180
                     }
                 }
+                .contextMenu {
+                    Button {
+                        editingCard = deck.cards[currentIndex]
+                    } label: {
+                        Label("Edit Card", systemImage: "pencil")
+                    }
+                    Button(role: .destructive) {
+                        deleteCard(at: currentIndex)
+                    } label: {
+                        Label("Delete Card", systemImage: "trash")
+                    }
+                }
             }
             
             navigationButtons
+            
+            HStack {
+                Button {
+                    showingAddCard = true
+                } label: {
+                    Label("Add Card", systemImage: "plus")
+                }
+                .buttonStyle(.bordered)
+                
+                if currentIndex < deck.cards.count {
+                    Button {
+                        editingCard = deck.cards[currentIndex]
+                    } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+                    .buttonStyle(.bordered)
+                }
+            }
+            .padding(.top, 10)
             
             Text("Tap card to flip")
                 .font(.caption)
@@ -73,6 +127,13 @@ struct StudyView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button("Done") { dismiss() }
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingAddCard = true
+                } label: {
+                    Image(systemName: "plus")
+                }
             }
         }
     }
@@ -92,6 +153,108 @@ struct StudyView: View {
             }
             .disabled(currentIndex >= deck.cards.count - 1)
             .foregroundStyle(currentIndex >= deck.cards.count - 1 ? Color.gray : Color.gothicAccent)
+        }
+    }
+    
+    private var addCardSheet: some View {
+        NavigationStack {
+            Form {
+                Section("Front (Question)") {
+                    TextField("Enter question", text: $newFront, axis: .vertical)
+                        .lineLimit(3...6)
+                }
+                Section("Back (Answer)") {
+                    TextField("Enter answer", text: $newBack, axis: .vertical)
+                        .lineLimit(3...6)
+                }
+            }
+            .navigationTitle("Add Card")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        newFront = ""
+                        newBack = ""
+                        showingAddCard = false
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Add") {
+                        addCard()
+                    }
+                    .disabled(newFront.isEmpty || newBack.isEmpty)
+                }
+            }
+        }
+    }
+    
+    private func editCardSheet(card: Card) -> some View {
+        NavigationStack {
+            Form {
+                Section("Front (Question)") {
+                    TextField("Enter question", text: Binding(
+                        get: { card.front },
+                        set: { updateCard(card, front: $0) }
+                    ), axis: .vertical)
+                    .lineLimit(3...6)
+                }
+                Section("Back (Answer)") {
+                    TextField("Enter answer", text: Binding(
+                        get: { card.back },
+                        set: { updateCard(card, back: $0) }
+                    ), axis: .vertical)
+                    .lineLimit(3...6)
+                }
+            }
+            .navigationTitle("Edit Card")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Done") {
+                        editingCard = nil
+                    }
+                }
+                ToolbarItem(placement: .destructiveAction) {
+                    Button("Delete") {
+                        deleteCard(card: card)
+                        editingCard = nil
+                    }
+                    .foregroundStyle(.red)
+                }
+            }
+        }
+    }
+    
+    private func addCard() {
+        let newCard = Card(front: newFront, back: newBack)
+        deck.cards.append(newCard)
+        newFront = ""
+        newBack = ""
+        showingAddCard = false
+    }
+    
+    private func updateCard(_ card: Card, front: String? = nil, back: String? = nil) {
+        if let index = deck.cards.firstIndex(where: { $0.id == card.id }) {
+            if let front = front {
+                deck.cards[index].front = front
+            }
+            if let back = back {
+                deck.cards[index].back = back
+            }
+        }
+    }
+    
+    private func deleteCard(card: Card) {
+        if let index = deck.cards.firstIndex(where: { $0.id == card.id }) {
+            deck.cards.remove(at: index)
+            if currentIndex >= deck.cards.count && currentIndex > 0 {
+                currentIndex = deck.cards.count - 1
+            }
+        }
+    }
+    
+    private func deleteCard(at index: Int) {
+        deck.cards.remove(at: index)
+        if currentIndex >= deck.cards.count && currentIndex > 0 {
+            currentIndex = deck.cards.count - 1
         }
     }
     
