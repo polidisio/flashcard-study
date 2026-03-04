@@ -4,92 +4,75 @@ struct ContentView: View {
     @State private var decks: [Deck] = []
     @State private var showingAddDeck = false
     @State private var showingImport = false
-    @State private var selectedDeck: Deck?
+    @State private var selectedDeckIndex: Int? = nil
     
     var body: some View {
         NavigationStack {
-            DeckListView(decks: $decks, selectedDeck: $selectedDeck, showingAddDeck: $showingAddDeck, showingImport: $showingImport)
-                .navigationTitle("Decks")
-                .sheet(isPresented: $showingAddDeck) {
-                    AddDeckView(decks: $decks)
-                }
-                .sheet(isPresented: $showingImport) {
-                    ImportView(decks: $decks)
-                }
-                .sheet(item: $selectedDeck) { deck in
-                    StudyView(deck: binding(for: deck) ?? $decks[0])
-                }
-                .onAppear {
-                    if decks.isEmpty {
-                        decks = SampleDecks.createAllDecks()
-                    }
-                }
-        }
-        .preferredColorScheme(.dark)
-    }
-    
-    private func binding(for deck: Deck) -> Binding<Deck>? {
-        guard let index = decks.firstIndex(where: { $0.id == deck.id }) else { return nil }
-        return $decks[index]
-    }
-}
-
-struct DeckListView: View {
-    @Binding var decks: [Deck]
-    @Binding var selectedDeck: Deck?
-    @Binding var showingAddDeck: Bool
-    @Binding var showingImport: Bool
-    
-    var body: some View {
-        List {
-            if decks.isEmpty {
-                VStack(spacing: 16) {
-                    Image(systemName: "rectangle.stack.badge.plus")
-                        .font(.system(size: 60))
-                        .foregroundStyle(Color.gothicAccent)
-                    Text("No Decks Yet")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
-                    Button("Create Your First Deck") {
-                        showingAddDeck = true
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(Color.gothicAccent)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 40)
-                .listRowBackground(Color.clear)
-            } else {
-                ForEach($decks) { $deck in
-                    DeckRowView(deck: $deck)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            selectedDeck = deck
+            List {
+                ForEach(Array(decks.enumerated()), id: \.element.id) { index, deck in
+                    Button {
+                        selectedDeckIndex = index
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(deck.name)
+                                    .font(.headline)
+                                    .foregroundStyle(Color.gothicText)
+                                Text("\(deck.cards.count) cards")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.secondary)
                         }
+                    }
+                    .listRowBackground(Color.gothicCard)
                 }
                 .onDelete(perform: deleteDeck)
             }
-        }
-        .listStyle(.plain)
-        .background(Color.gothicBackground)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    showingImport = true
-                } label: {
-                    Image(systemName: "square.and.arrow.down")
-                        .foregroundStyle(Color.gothicAccent)
+            .listStyle(.plain)
+            .background(Color.gothicBackground)
+            .navigationTitle("Decks")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showingImport = true
+                    } label: {
+                        Image(systemName: "square.and.arrow.down")
+                            .foregroundStyle(Color.gothicAccent)
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showingAddDeck = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .foregroundStyle(Color.gothicAccent)
+                    }
                 }
             }
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showingAddDeck = true
-                } label: {
-                    Image(systemName: "plus")
-                        .foregroundStyle(Color.gothicAccent)
+            .sheet(isPresented: $showingAddDeck) {
+                AddDeckView(decks: $decks)
+            }
+            .sheet(isPresented: $showingImport) {
+                ImportView(decks: $decks)
+            }
+            .sheet(item: Binding(
+                get: { selectedDeckIndex.map { IndexItem(index: $0) } },
+                set: { selectedDeckIndex = $0?.index }
+            )) { item in
+                if item.index < decks.count {
+                    StudyView(deck: $decks[item.index])
+                }
+            }
+            .onAppear {
+                if decks.isEmpty {
+                    decks = SampleDecks.createAllDecks()
                 }
             }
         }
+        .preferredColorScheme(.dark)
     }
     
     private func deleteDeck(at offsets: IndexSet) {
@@ -97,128 +80,44 @@ struct DeckListView: View {
     }
 }
 
-struct DeckRowView: View {
-    @Binding var deck: Deck
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(deck.name)
-                .font(.headline)
-                .foregroundStyle(Color.gothicText)
-            Text("\(deck.cards.count) cards")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .padding(.vertical, 8)
-        .listRowBackground(Color.gothicCard)
-    }
+struct IndexItem: Identifiable {
+    let id = UUID()
+    let index: Int
 }
 
 struct AddDeckView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var decks: [Deck]
     @State private var deckName = ""
-    @State private var cards: [Card] = []
-    @State private var showingAddCard = false
     
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
                 TextField("Deck Name", text: $deckName)
                     .textFieldStyle(.roundedBorder)
-                    .padding(.horizontal)
+                    .padding()
                 
-                if !cards.isEmpty {
-                    List {
-                        ForEach(cards) { card in
-                            VStack(alignment: .leading) {
-                                Text(card.front)
-                                    .font(.headline)
-                                Text(card.back)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
+                Button("Create Deck") {
+                    if !deckName.isEmpty {
+                        decks.append(Deck(name: deckName))
+                        dismiss()
                     }
-                    .frame(height: 200)
-                }
-                
-                Button {
-                    showingAddCard = true
-                } label: {
-                    Label("Add Card", systemImage: "plus.circle.fill")
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(Color.gothicAccent)
+                .disabled(deckName.isEmpty)
                 
                 Spacer()
             }
-            .padding(.top, 20)
+            .padding()
+            .background(Color.gothicBackground)
             .navigationTitle("New Deck")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        let newDeck = Deck(name: deckName, cards: cards)
-                        decks.append(newDeck)
-                        dismiss()
-                    }
-                    .disabled(deckName.isEmpty)
-                }
-            }
-            .sheet(isPresented: $showingAddCard) {
-                AddCardView(cards: $cards)
-            }
-        }
-        .preferredColorScheme(.dark)
-    }
-}
-
-struct AddCardView: View {
-    @Environment(\.dismiss) var dismiss
-    @Binding var cards: [Card]
-    @State private var front = ""
-    @State private var back = ""
-    
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section("Front (Question)") {
-                    TextField("Enter question", text: $front, axis: .vertical)
-                        .lineLimit(3...6)
-                }
-                Section("Back (Answer)") {
-                    TextField("Enter answer", text: $back, axis: .vertical)
-                        .lineLimit(3...6)
-                }
-            }
-            .navigationTitle("Add Card")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        let card = Card(front: front, back: back)
-                        cards.append(card)
-                        dismiss()
-                    }
-                    .disabled(front.isEmpty || back.isEmpty)
+                    Button("Cancel") { dismiss() }
                 }
             }
         }
-        .preferredColorScheme(.dark)
     }
-}
-
-#Preview {
-    ContentView()
 }
