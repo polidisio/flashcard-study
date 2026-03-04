@@ -116,8 +116,7 @@ struct StudyView: View {
             
             if let card = currentCard {
                 CardFlipView(
-                    front: card.front,
-                    back: card.back,
+                    card: card,
                     isFlipped: $isFlipped,
                     rotation: $rotation
                 )
@@ -486,27 +485,40 @@ struct StudyView: View {
 }
 
 struct CardFlipView: View {
-    let front: String
-    let back: String
+    let card: Card
     @Binding var isFlipped: Bool
     @Binding var rotation: Double
+    @StateObject private var mediaManager = MediaManager.shared
     
     var body: some View {
         ZStack {
-            CardFace(text: front, isBack: false)
-                .opacity(isFlipped ? 0 : 1)
-                .rotation3DEffect(.degrees(rotation), axis: (x: 0, y: 1, z: 0))
+            CardFace(
+                text: card.front,
+                imagePath: card.imageFront,
+                audioPath: card.audioFront,
+                isBack: false
+            )
+            .opacity(isFlipped ? 0 : 1)
+            .rotation3DEffect(.degrees(rotation), axis: (x: 0, y: 1, z: 0))
             
-            CardFace(text: back, isBack: true)
-                .opacity(isFlipped ? 1 : 0)
-                .rotation3DEffect(.degrees(rotation + 180), axis: (x: 0, y: 1, z: 0))
+            CardFace(
+                text: card.back,
+                imagePath: card.imageBack,
+                audioPath: card.audioBack,
+                isBack: true
+            )
+            .opacity(isFlipped ? 1 : 0)
+            .rotation3DEffect(.degrees(rotation + 180), axis: (x: 0, y: 1, z: 0))
         }
     }
 }
 
 struct CardFace: View {
     let text: String
+    let imagePath: String?
+    let audioPath: String?
     let isBack: Bool
+    @StateObject private var mediaManager = MediaManager.shared
     
     var body: some View {
         ZStack {
@@ -517,11 +529,48 @@ struct CardFace: View {
                         .stroke(Color.gothicBorder, lineWidth: 3)
                 )
             
-            Text(text)
-                .font(.title2)
-                .multilineTextAlignment(.center)
-                .foregroundStyle(Color.gothicText)
-                .padding()
+            VStack(spacing: 16) {
+                if let imagePath = imagePath,
+                   let imageURL = mediaManager.getImageURL(from: imagePath) {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        case .failure, .empty:
+                            Image(systemName: "photo")
+                                .font(.largeTitle)
+                                .foregroundStyle(.secondary)
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .frame(maxHeight: 150)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+                
+                Text(text)
+                    .font(.title2)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(Color.gothicText)
+                    .padding()
+                
+                if let audioPath = audioPath {
+                    Button {
+                        mediaManager.toggleAudio(from: audioPath)
+                    } label: {
+                        HStack {
+                            Image(systemName: mediaManager.isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                            Text(mediaManager.isPlaying ? "Playing..." : "Play Audio")
+                        }
+                        .font(.subheadline)
+                        .foregroundStyle(Color.gothicAccent)
+                    }
+                    .padding(.top, 8)
+                }
+            }
+            .padding()
         }
         .frame(width: 280, height: 350)
     }

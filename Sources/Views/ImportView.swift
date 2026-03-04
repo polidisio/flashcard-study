@@ -6,6 +6,16 @@ extension UTType {
     static var xlsx: UTType {
         UTType(filenameExtension: "xlsx") ?? .data
     }
+    
+    static var apkg: UTType {
+        UTType(filenameExtension: "apkg") ?? .zip
+    }
+}
+
+enum ImportFormat: String, CaseIterable {
+    case csv = "CSV"
+    case excel = "Excel"
+    case apkg = "Anki (.apkg)"
 }
 
 struct ImportView: View {
@@ -16,7 +26,19 @@ struct ImportView: View {
     @State private var showingFilePicker = false
     @State private var showingError = false
     @State private var errorMessage = ""
-    @State private var useExcel = false
+    @State private var selectedFormat: ImportFormat = .csv
+    @State private var isImporting = false
+    
+    private var fileTypes: [UTType] {
+        switch selectedFormat {
+        case .csv:
+            return [.commaSeparatedText, .plainText]
+        case .excel:
+            return [.xlsx]
+        case .apkg:
+            return [.apkg, .zip]
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -26,16 +48,24 @@ struct ImportView: View {
                 }
                 
                 Section("Format") {
-                    Picker("Format", selection: $useExcel) {
-                        Text("CSV").tag(false)
-                        Text("Excel").tag(true)
+                    Picker("Format", selection: $selectedFormat) {
+                        ForEach(ImportFormat.allCases, id: \.self) { format in
+                            Text(format.rawValue).tag(format)
+                        }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(.menu)
                     
                     Button("Select File") {
                         showingFilePicker = true
                     }
                     .frame(maxWidth: .infinity)
+                    
+                    if isImporting {
+                        HStack {
+                            ProgressView()
+                            Text("Importing...")
+                        }
+                    }
                 }
                 
                 Section("Preview") {
@@ -69,7 +99,7 @@ struct ImportView: View {
             }
             .fileImporter(
                 isPresented: $showingFilePicker,
-                allowedContentTypes: useExcel ? [.xlsx] : [.commaSeparatedText, .plainText],
+                allowedContentTypes: fileTypes,
                 allowsMultipleSelection: false
             ) { result in
                 handleFile(result)
@@ -86,23 +116,36 @@ struct ImportView: View {
         switch result {
         case .success(let urls):
             guard let url = urls.first else { return }
-            do {
-                if useExcel {
-                    importedCards = try parseExcel(url: url)
-                } else {
-                    importedCards = try parseCSV(url: url)
-                }
-                if importedCards.isEmpty {
-                    errorMessage = "No cards found"
+            isImporting = true
+            Task {
+                do {
+                    switch selectedFormat {
+                    case .csv:
+                        importedCards = try parseCSV(url: url)
+                    case .excel:
+                        importedCards = try parseExcel(url: url)
+                    case .apkg:
+                        let importer = APKImporter()
+                        let importResult = try await importer.importAPK(from: url)
+                        importedCards = importResult.cards
+                        if deckName.isEmpty {
+                            deckName = importResult.deckName
+                        }
+                    }
+                    if importedCards.isEmpty {
+                        errorMessage = "No cards found"
+                        showingError = true
+                    }
+                } catch {
+                    errorMessage = error.localizedDescription
                     showingError = true
                 }
-            } catch {
-                errorMessage = error.localizedDescription
-                showingError = true
+                isImporting = false
             }
         case .failure(let error):
             errorMessage = error.localizedDescription
             showingError = true
+            isImporting = false
         }
     }
     

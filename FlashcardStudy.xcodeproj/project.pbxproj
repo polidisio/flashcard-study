@@ -14,6 +14,7 @@
 		31A0D72210948D4836705072 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C85564049E538C62ADD394 /* Deck.swift */; };
 		3AEDC67966864AC0A82EF429 /* ScienceCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504942073EB9CE75E326BAD0 /* ScienceCards.swift */; };
 		3E70F7C7B919094BD9C1CF48 /* HistoryCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639254D10131FB38338B5787 /* HistoryCards.swift */; };
+		424E79981EE3B74067F4A219 /* MediaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05409CD6F2A65EFEE9A8BBC /* MediaManager.swift */; };
 		557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562CC8695A8B6F97E986EE65 /* CardProgress.swift */; };
 		65862D7792026CB60687F5D4 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6A895D3054D8EA7538A5E9 /* CardTests.swift */; };
 		76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9C587F4C731424208736D /* SampleDecks.swift */; };
@@ -24,6 +25,8 @@
 		BD03F185B6C6F1E8E62E981E /* AddDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E91A046D38F3C4B564062A49 /* AddDeckView.swift */; };
 		BE9391710C2222EBA3116209 /* FlashcardStudyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C9A089A8588473B0F22A12 /* FlashcardStudyApp.swift */; };
 		C18B612EFFA74527F1F1910A /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560E47B27877FFB89E86E386 /* ImportView.swift */; };
+		C82E5037A3A5A49F2960ED32 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = D6B8875A8168997D1280FE5A /* SQLite */; };
+		CC319F83475F2C8DF9ACE34F /* APKImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639E8E0E34EA89A5E4EC2AF5 /* APKImporter.swift */; };
 		D98D1ABE17B50A44A8A8D188 /* SpacedRepetition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B2FD1056C73D05A80588B8 /* SpacedRepetition.swift */; };
 		EB6A63A26F198FF884EEC07D /* SpacedRepetitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068DFD394970B35D2877944E /* SpacedRepetitionTests.swift */; };
 		F09B337FC20EA0FD11140DD4 /* GeographyCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600902A572D87F1BD46ED1AC /* GeographyCards.swift */; };
@@ -55,6 +58,7 @@
 		562CC8695A8B6F97E986EE65 /* CardProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardProgress.swift; sourceTree = "<group>"; };
 		600902A572D87F1BD46ED1AC /* GeographyCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeographyCards.swift; sourceTree = "<group>"; };
 		639254D10131FB38338B5787 /* HistoryCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCards.swift; sourceTree = "<group>"; };
+		639E8E0E34EA89A5E4EC2AF5 /* APKImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APKImporter.swift; sourceTree = "<group>"; };
 		63DD29B0DAA4B1BEF555C5C4 /* FlashcardStudyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FlashcardStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C6A895D3054D8EA7538A5E9 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
 		6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GothicTheme.swift; sourceTree = "<group>"; };
@@ -63,6 +67,7 @@
 		956B4533345831B6F4C24B62 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		96DC8D9F769B1C624951E28B /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		A6C9A089A8588473B0F22A12 /* FlashcardStudyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardStudyApp.swift; sourceTree = "<group>"; };
+		B05409CD6F2A65EFEE9A8BBC /* MediaManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaManager.swift; sourceTree = "<group>"; };
 		D1941D42154A9A657F111CD1 /* CardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStats.swift; sourceTree = "<group>"; };
 		E91A046D38F3C4B564062A49 /* AddDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDeckView.swift; sourceTree = "<group>"; };
 		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,6 +80,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3ED5E9B37A5C3C8E2E0552E /* ZIPFoundation in Frameworks */,
+				C82E5037A3A5A49F2960ED32 /* SQLite in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,6 +104,7 @@
 		129BB5E1012DB59D3ED99701 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				639E8E0E34EA89A5E4EC2AF5 /* APKImporter.swift */,
 				956B4533345831B6F4C24B62 /* Card.swift */,
 				562CC8695A8B6F97E986EE65 /* CardProgress.swift */,
 				D1941D42154A9A657F111CD1 /* CardStats.swift */,
@@ -106,6 +113,7 @@
 				600902A572D87F1BD46ED1AC /* GeographyCards.swift */,
 				639254D10131FB38338B5787 /* HistoryCards.swift */,
 				2C3F12EA115B285E1B5517DC /* LanguageCards.swift */,
+				B05409CD6F2A65EFEE9A8BBC /* MediaManager.swift */,
 				4CE9C587F4C731424208736D /* SampleDecks.swift */,
 				504942073EB9CE75E326BAD0 /* ScienceCards.swift */,
 				15B2FD1056C73D05A80588B8 /* SpacedRepetition.swift */,
@@ -194,6 +202,7 @@
 			name = FlashcardStudy;
 			packageProductDependencies = (
 				FEE4C94813AA271EEFF0F378 /* ZIPFoundation */,
+				D6B8875A8168997D1280FE5A /* SQLite */,
 			);
 			productName = FlashcardStudy;
 			productReference = FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */;
@@ -225,6 +234,7 @@
 			mainGroup = B762BBE15FBAB80C16728B50;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				FD9288E77F587E3FA1C59657 /* XCRemoteSwiftPackageReference "SQLite.swift" */,
 				76DFECA4B33D9FCDA04DFD48 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -242,6 +252,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC319F83475F2C8DF9ACE34F /* APKImporter.swift in Sources */,
 				BD03F185B6C6F1E8E62E981E /* AddDeckView.swift in Sources */,
 				F576F6442407790774664B5A /* Card.swift in Sources */,
 				557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */,
@@ -256,6 +267,7 @@
 				3E70F7C7B919094BD9C1CF48 /* HistoryCards.swift in Sources */,
 				C18B612EFFA74527F1F1910A /* ImportView.swift in Sources */,
 				8AC455C3C11A5DAAD0614412 /* LanguageCards.swift in Sources */,
+				424E79981EE3B74067F4A219 /* MediaManager.swift in Sources */,
 				76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */,
 				3AEDC67966864AC0A82EF429 /* ScienceCards.swift in Sources */,
 				D98D1ABE17B50A44A8A8D188 /* SpacedRepetition.swift in Sources */,
@@ -529,9 +541,22 @@
 				minimumVersion = 0.9.0;
 			};
 		};
+		FD9288E77F587E3FA1C59657 /* XCRemoteSwiftPackageReference "SQLite.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stephencelis/SQLite.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.15.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		D6B8875A8168997D1280FE5A /* SQLite */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FD9288E77F587E3FA1C59657 /* XCRemoteSwiftPackageReference "SQLite.swift" */;
+			productName = SQLite;
+		};
 		FEE4C94813AA271EEFF0F378 /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 76DFECA4B33D9FCDA04DFD48 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
