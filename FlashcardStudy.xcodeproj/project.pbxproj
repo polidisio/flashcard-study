@@ -12,6 +12,7 @@
 		31A0D72210948D4836705072 /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70C85564049E538C62ADD394 /* Deck.swift */; };
 		3AEDC67966864AC0A82EF429 /* ScienceCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 504942073EB9CE75E326BAD0 /* ScienceCards.swift */; };
 		3E70F7C7B919094BD9C1CF48 /* HistoryCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639254D10131FB38338B5787 /* HistoryCards.swift */; };
+		76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9C587F4C731424208736D /* SampleDecks.swift */; };
 		8AC455C3C11A5DAAD0614412 /* LanguageCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3F12EA115B285E1B5517DC /* LanguageCards.swift */; };
 		BE9391710C2222EBA3116209 /* FlashcardStudyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C9A089A8588473B0F22A12 /* FlashcardStudyApp.swift */; };
 		C18B612EFFA74527F1F1910A /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560E47B27877FFB89E86E386 /* ImportView.swift */; };
@@ -22,6 +23,7 @@
 
 /* Begin PBXFileReference section */
 		2C3F12EA115B285E1B5517DC /* LanguageCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCards.swift; sourceTree = "<group>"; };
+		4CE9C587F4C731424208736D /* SampleDecks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDecks.swift; sourceTree = "<group>"; };
 		504942073EB9CE75E326BAD0 /* ScienceCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScienceCards.swift; sourceTree = "<group>"; };
 		560E47B27877FFB89E86E386 /* ImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportView.swift; sourceTree = "<group>"; };
 		600902A572D87F1BD46ED1AC /* GeographyCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeographyCards.swift; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 				600902A572D87F1BD46ED1AC /* GeographyCards.swift */,
 				639254D10131FB38338B5787 /* HistoryCards.swift */,
 				2C3F12EA115B285E1B5517DC /* LanguageCards.swift */,
+				4CE9C587F4C731424208736D /* SampleDecks.swift */,
 				504942073EB9CE75E326BAD0 /* ScienceCards.swift */,
 			);
 			path = Models;
@@ -170,6 +173,7 @@
 				3E70F7C7B919094BD9C1CF48 /* HistoryCards.swift in Sources */,
 				C18B612EFFA74527F1F1910A /* ImportView.swift in Sources */,
 				8AC455C3C11A5DAAD0614412 /* LanguageCards.swift in Sources */,
+				76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */,
 				3AEDC67966864AC0A82EF429 /* ScienceCards.swift in Sources */,
 				16B0C6CF15827C330E01B538 /* StudyView.swift in Sources */,
 			);
