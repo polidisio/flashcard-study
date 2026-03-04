@@ -1,6 +1,12 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+extension UTType {
+    static var xlsx: UTType {
+        UTType(filenameExtension: "xlsx") ?? .data
+    }
+}
+
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var decks: [Deck]
@@ -20,7 +26,7 @@ struct ImportView: View {
                             .foregroundStyle(Color.gothicAccent)
                         Text("Import Cards")
                             .font(.title2)
-                        Text("Import flashcards from CSV files.\nFormat: front,back (first row is header)")
+                        Text("Import flashcards from CSV or Excel files.\nFormat: front,back (first row is header)")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -34,7 +40,7 @@ struct ImportView: View {
                         .tint(Color.gothicAccent)
                         .fileImporter(
                             isPresented: $showingDeckPicker,
-                            allowedContentTypes: [.commaSeparatedText, .plainText],
+                            allowedContentTypes: [.commaSeparatedText, .plainText, .xlsx],
                             allowsMultipleSelection: false
                         ) { result in
                             handleFileSelection(result)
@@ -118,9 +124,16 @@ struct ImportView: View {
             
             defer { url.stopAccessingSecurityScopedResource() }
             
+            let fileExtension = url.pathExtension.lowercased()
+            
             do {
-                let content = try String(contentsOf: url, encoding: .utf8)
-                importedCards = parseCSV(content: content)
+                if fileExtension == "xlsx" {
+                    importedCards = try parseExcel(url: url)
+                } else {
+                    let content = try String(contentsOf: url, encoding: .utf8)
+                    importedCards = parseCSV(content: content)
+                }
+                
                 if importedCards.isEmpty {
                     errorMessage = "No valid cards found in file"
                     showingError = true
@@ -176,6 +189,180 @@ struct ImportView: View {
         
         result.append(current.trimmingCharacters(in: .whitespaces))
         return result
+    }
+    
+    private func parseExcel(url: URL) throws -> [Card] {
+        let tempDir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: tempDir) }
+        
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/unzip")
+        process.arguments = ["-o", url.path, "-d", tempDir.path]
+        try process.run()
+        process.waitUntilExit()
+        
+        let sharedStringsPath = tempDir.appendingPathComponent("xl/sharedStrings.xml")
+        var sharedStrings: [String] = []
+        
+        if FileManager.default.fileExists(atPath: sharedStringsPath.path) {
+            let sharedStringsData = try Data(contentsOf: sharedStringsPath)
+            if let sharedStringsXML = String(data: sharedStringsData, encoding: .utf8) {
+                sharedStrings = parseSharedStrings(sharedStringsXML)
+            }
+        }
+        
+        let sheetPath = tempDir.appendingPathComponent("xl/worksheets/sheet1.xml")
+        guard FileManager.default.fileExists(atPath: sheetPath.path) else {
+            throw NSError(domain: "ImportView", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not find sheet1.xml in Excel file"])
+        }
+        
+        let sheetData = try Data(contentsOf: sheetPath)
+        guard let sheetXML = String(data: sheetData, encoding: .utf8) else {
+            throw NSError(domain: "ImportView", code: 2, userInfo: [NSLocalizedDescriptionKey: "Could not read sheet XML"])
+        }
+        
+        return parseSheetXML(sheetXML, sharedStrings: sharedStrings)
+    }
+    
+    private func parseSharedStrings(_ xml: String) -> [String] {
+        var strings: [String] = []
+        var currentString = ""
+        var inT = false
+        
+        var chars = Array(xml)
+        var i = 0
+        while i < chars.count {
+            if i + 3 < chars.count && chars[i] == "<" && chars[i+1] == "t" && chars[i+2] == ">" {
+                inT = true
+                i += 3
+                continue
+            }
+            if inT && chars[i] == "<" && i + 4 < chars.count && String(chars[i..<i+4]) == "</t>" {
+                strings.append(currentString)
+                currentString = ""
+                inT = false
+                i += 4
+                continue
+            }
+            if inT {
+                currentString.append(chars[i])
+            }
+            i += 1
+        }
+        
+        return strings
+    }
+    
+    private func parseSheetXML(_ xml: String, sharedStrings: [String]) -> [Card] {
+        var cards: [Card] = []
+        var rows: [[String]] = []
+        var currentRow: [String] = []
+        var currentCell = ""
+        var inV = false
+        var inT = false
+        var cellRef = ""
+        var lastCol = -1
+        
+        var chars = Array(xml)
+        var i = 0
+        while i < chars.count {
+            if i + 8 < chars.count && String(chars[i..<i+9]) == "<row r=\"" {
+                if !currentRow.isEmpty && currentRow.count >= 2 {
+                    rows.append(currentRow)
+                }
+                currentRow = []
+                lastCol = -1
+                i += 9
+                continue
+            }
+            
+            if i + 2 < chars.count && chars[i] == "<" && chars[i+1] == "c" {
+                var j = i + 2
+                cellRef = ""
+                while j < chars.count && chars[j] != ">" && chars[j] != " " {
+                    cellRef.append(chars[j])
+                    j += 1
+                }
+                
+                let col = columnIndexFromRef(cellRef)
+                while currentRow.count <= col {
+                    currentRow.append("")
+                }
+                i = j
+                continue
+            }
+            
+            if i + 2 < chars.count && String(chars[i..<i+3]) == "<v>" {
+                inV = true
+                currentCell = ""
+                i += 3
+                continue
+            }
+            if inV && chars[i] == "<" && i + 1 < chars.count && chars[i+1] == "/" {
+                inV = false
+                if let col = cellRef.isEmpty ? nil : columnIndexFromRef(cellRef) {
+                    if col < currentRow.count {
+                        if let intVal = Int(currentCell), intVal < sharedStrings.count {
+                            currentRow[col] = sharedStrings[intVal]
+                        } else {
+                            currentRow[col] = currentCell
+                        }
+                    }
+                }
+                i += 1
+                continue
+            }
+            
+            if i + 2 < chars.count && String(chars[i..<i+3]) == "<t>" {
+                inT = true
+                currentCell = ""
+                i += 3
+                continue
+            }
+            if inT && chars[i] == "<" && i + 3 < chars.count && String(chars[i..<i+4]) == "</t>" {
+                inT = false
+                if let col = cellRef.isEmpty ? nil : columnIndexFromRef(cellRef) {
+                    if col < currentRow.count {
+                        currentRow[col] = currentCell
+                    }
+                }
+                i += 4
+                continue
+            }
+            
+            if inV || inT {
+                currentCell.append(chars[i])
+            }
+            i += 1
+        }
+        
+        if !currentRow.isEmpty && currentRow.count >= 2 {
+            rows.append(currentRow)
+        }
+        
+        for (index, row) in rows.enumerated() {
+            if index == 0 && row[0].lowercased().contains("front") && row[1].lowercased().contains("back") {
+                continue
+            }
+            if row.count >= 2 && !row[0].isEmpty && !row[1].isEmpty {
+                cards.append(Card(front: row[0], back: row[1]))
+            }
+        }
+        
+        return cards
+    }
+    
+    private func columnIndexFromRef(_ ref: String) -> Int {
+        var col = 0
+        for char in ref {
+            if char.isLetter {
+                col = col * 26 + Int(char.asciiValue! - 64)
+            } else {
+                break
+            }
+        }
+        return col - 1
     }
     
     private func addCardsToDeck() {
