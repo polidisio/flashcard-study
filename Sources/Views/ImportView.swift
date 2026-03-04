@@ -264,11 +264,11 @@ struct ImportView: View {
                 if let tRange = Range(cellMatch.range(at: 2), in: rowContent) {
                     rowData.append(String(rowContent[tRange]))
                 } else if let vRange = Range(cellMatch.range(at: 4), in: rowContent) {
-                    let valueIndex = Int(rowContent[vRange]) ?? 0
-                    if valueIndex < sharedStrings.count {
+                    let valueStr = String(rowContent[vRange])
+                    if let valueIndex = Int(valueStr), valueIndex < sharedStrings.count {
                         rowData.append(sharedStrings[valueIndex])
                     } else {
-                        rowData.append(rowContent[vRange])
+                        rowData.append(valueStr)
                     }
                 }
             }
