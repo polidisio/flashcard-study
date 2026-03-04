@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BD51DCCF7C10077BCF5E504 /* CardStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1941D42154A9A657F111CD1 /* CardStats.swift */; };
 		120A78A9DE0714879B3164B1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 918D4B107E2F86A4FEC2FB51 /* ContentView.swift */; };
 		16B0C6CF15827C330E01B538 /* StudyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0F722E33A8704A2F29871A /* StudyView.swift */; };
 		221A01D2A3F17BE0902A4188 /* ExcelParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292683B3D8490361C2A52174 /* ExcelParser.swift */; };
@@ -16,6 +17,7 @@
 		557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562CC8695A8B6F97E986EE65 /* CardProgress.swift */; };
 		65862D7792026CB60687F5D4 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6A895D3054D8EA7538A5E9 /* CardTests.swift */; };
 		76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9C587F4C731424208736D /* SampleDecks.swift */; };
+		89059A35D2A349FCE0BB9ED5 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC8D9F769B1C624951E28B /* StatsView.swift */; };
 		8AC455C3C11A5DAAD0614412 /* LanguageCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3F12EA115B285E1B5517DC /* LanguageCards.swift */; };
 		A5FE5EC302875EB2CA0B13D4 /* DeckStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514B72D30F003BACBE3BF467 /* DeckStore.swift */; };
 		B55775A80CA0F47C35030235 /* CSVParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5132DFD1E68CF0B4C07CD2B2 /* CSVParserTests.swift */; };
@@ -59,7 +61,9 @@
 		70C85564049E538C62ADD394 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		918D4B107E2F86A4FEC2FB51 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		956B4533345831B6F4C24B62 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		96DC8D9F769B1C624951E28B /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		A6C9A089A8588473B0F22A12 /* FlashcardStudyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardStudyApp.swift; sourceTree = "<group>"; };
+		D1941D42154A9A657F111CD1 /* CardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStats.swift; sourceTree = "<group>"; };
 		E91A046D38F3C4B564062A49 /* AddDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDeckView.swift; sourceTree = "<group>"; };
 		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE0F722E33A8704A2F29871A /* StudyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyView.swift; sourceTree = "<group>"; };
@@ -85,6 +89,7 @@
 				292683B3D8490361C2A52174 /* ExcelParser.swift */,
 				6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */,
 				560E47B27877FFB89E86E386 /* ImportView.swift */,
+				96DC8D9F769B1C624951E28B /* StatsView.swift */,
 				FE0F722E33A8704A2F29871A /* StudyView.swift */,
 			);
 			path = Views;
@@ -95,6 +100,7 @@
 			children = (
 				956B4533345831B6F4C24B62 /* Card.swift */,
 				562CC8695A8B6F97E986EE65 /* CardProgress.swift */,
+				D1941D42154A9A657F111CD1 /* CardStats.swift */,
 				70C85564049E538C62ADD394 /* Deck.swift */,
 				514B72D30F003BACBE3BF467 /* DeckStore.swift */,
 				600902A572D87F1BD46ED1AC /* GeographyCards.swift */,
@@ -239,6 +245,7 @@
 				BD03F185B6C6F1E8E62E981E /* AddDeckView.swift in Sources */,
 				F576F6442407790774664B5A /* Card.swift in Sources */,
 				557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */,
+				0BD51DCCF7C10077BCF5E504 /* CardStats.swift in Sources */,
 				120A78A9DE0714879B3164B1 /* ContentView.swift in Sources */,
 				31A0D72210948D4836705072 /* Deck.swift in Sources */,
 				A5FE5EC302875EB2CA0B13D4 /* DeckStore.swift in Sources */,
@@ -252,6 +259,7 @@
 				76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */,
 				3AEDC67966864AC0A82EF429 /* ScienceCards.swift in Sources */,
 				D98D1ABE17B50A44A8A8D188 /* SpacedRepetition.swift in Sources */,
+				89059A35D2A349FCE0BB9ED5 /* StatsView.swift in Sources */,
 				16B0C6CF15827C330E01B538 /* StudyView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -49,14 +49,15 @@ struct StudyView: View {
             if cards.isEmpty {
                 emptyStateView
             } else {
-                VStack(spacing: 0) {
+                VStack(spacing: 16) {
                     Picker("Study Mode", selection: $studyMode) {
                         ForEach(StudyMode.allCases, id: \.self) { mode in
                             Text(mode.rawValue).tag(mode)
                         }
                     }
                     .pickerStyle(.segmented)
-                    .padding()
+                    .padding(.horizontal)
+                    .padding(.top, 8)
                     
                     cardView
                 }
@@ -107,10 +108,11 @@ struct StudyView: View {
     }
     
     private var cardView: some View {
-        VStack(spacing: 30) {
-            Text("Card \(currentIndex + 1) of \(studyCards.count)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+        ScrollView {
+            VStack(spacing: 24) {
+                Text("Card \(currentIndex + 1) of \(studyCards.count)")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             
             if let card = currentCard {
                 CardFlipView(
@@ -173,6 +175,7 @@ struct StudyView: View {
             .padding(.top, 10)
         }
         .padding()
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.gothicBackground)
         .navigationTitle(deck.name)

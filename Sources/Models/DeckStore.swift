@@ -31,8 +31,12 @@ final class DeckStore {
     }
     
     func load() {
-        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+        if !FileManager.default.fileExists(atPath: fileURL.path) {
             decks = SampleDecks.createAllDecks()
+            for deck in decks {
+                cardStats[deck.id] = [:]
+                deckStats[deck.id] = DeckStats()
+            }
             save()
             loadProgress()
             loadStats()
@@ -45,6 +49,15 @@ final class DeckStore {
         } catch {
             print("Error loading decks: \(error)")
             decks = SampleDecks.createAllDecks()
+        }
+        
+        for deck in decks {
+            if cardStats[deck.id] == nil {
+                cardStats[deck.id] = [:]
+            }
+            if deckStats[deck.id] == nil {
+                deckStats[deck.id] = DeckStats()
+            }
         }
         
         loadProgress()
