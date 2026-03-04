@@ -3,7 +3,7 @@ import SwiftUI
 struct StudyView: View {
     let deck: Deck
     @Environment(\.dismiss) var dismiss
-    @Environment(DeckStore.self) private var deckStore
+    @Bindable var deckStore: DeckStore
     @State private var currentIndex = 0
     @State private var isFlipped = false
     @State private var rotation: Double = 0
@@ -203,7 +203,7 @@ struct StudyView: View {
             }
         }
         .sheet(isPresented: $showingStats) {
-            StatsView(deck: deck)
+            StatsView(deck: deck, deckStore: deckStore)
         }
     }
     
@@ -550,5 +550,5 @@ struct StatBadge: View {
     StudyView(deck: Deck(name: "Test", cards: [
         Card(front: "Q1", back: "A1"),
         Card(front: "Q2", back: "A2")
-    ]))
+    ]), deckStore: DeckStore())
 }

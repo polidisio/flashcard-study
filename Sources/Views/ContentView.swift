@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @Environment(DeckStore.self) private var deckStore
+    @Bindable var deckStore: DeckStore
     @State private var showingAddDeck = false
     @State private var showingImport = false
     @State private var selectedDeckIndex: Int? = nil
@@ -65,17 +65,17 @@ struct ContentView: View {
                 }
             }
             .sheet(isPresented: $showingAddDeck) {
-                AddDeckView()
+                AddDeckView(deckStore: deckStore)
             }
             .sheet(isPresented: $showingImport) {
-                ImportView()
+                ImportView(deckStore: deckStore)
             }
             .sheet(item: Binding(
                 get: { selectedDeckIndex.map { IndexItem(index: $0) } },
                 set: { selectedDeckIndex = $0?.index }
             )) { item in
                 if item.index < deckStore.decks.count {
-                    StudyView(deck: deckStore.decks[item.index])
+                    StudyView(deck: deckStore.decks[item.index], deckStore: deckStore)
                 }
             }
             .sheet(item: Binding(
@@ -137,5 +137,5 @@ struct IndexItem: Identifiable {
 }
 
 #Preview {
-    ContentView()
+    ContentView(deckStore: DeckStore())
 }

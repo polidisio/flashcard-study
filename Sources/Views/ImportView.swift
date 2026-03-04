@@ -10,7 +10,7 @@ extension UTType {
 
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(DeckStore.self) private var deckStore
+    var deckStore: DeckStore
     @State private var deckName = ""
     @State private var importedCards: [Card] = []
     @State private var showingFilePicker = false

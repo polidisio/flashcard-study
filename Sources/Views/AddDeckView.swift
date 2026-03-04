@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AddDeckView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(DeckStore.self) private var deckStore
+    var deckStore: DeckStore
     @State private var deckName = ""
     
     var body: some View {

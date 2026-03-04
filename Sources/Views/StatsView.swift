@@ -3,7 +3,7 @@ import SwiftUI
 struct StatsView: View {
     let deck: Deck
     @Environment(\.dismiss) var dismiss
-    @Environment(DeckStore.self) private var deckStore
+    var deckStore: DeckStore
     @State private var showingResetAlert = false
     
     private var deckStats: DeckStats {
