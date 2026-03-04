@@ -19,6 +19,11 @@ struct ContentView: View {
                 .sheet(item: $selectedDeck) { deck in
                     StudyView(deck: binding(for: deck) ?? $decks[0])
                 }
+                .onAppear {
+                    if decks.isEmpty {
+                        decks = SampleDecks.createAllDecks()
+                    }
+                }
         }
         .preferredColorScheme(.dark)
     }
