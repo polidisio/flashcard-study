@@ -9,28 +9,29 @@ struct StudyView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 30) {
-                if deck.cards.isEmpty {
-                    VStack(spacing: 16) {
-                        Image(systemName: "rectangle.on.rectangle.slash")
-                            .font(.system(size: 60))
-                            .foregroundStyle(Color.gothicAccent)
-                        Text("No Cards in Deck")
-                            .font(.title2)
-                        Text("Add some cards to start studying")
-                            .foregroundStyle(.secondary)
-                    }
-                } else {
+            if deck.cards.isEmpty {
+                VStack(spacing: 16) {
+                    Image(systemName: "rectangle.on.rectangle.slash")
+                        .font(.system(size: 60))
+                        .foregroundStyle(Color.gothicAccent)
+                    Text("No Cards in Deck")
+                        .font(.title2)
+                    Text("Add some cards to start studying")
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                VStack(spacing: 30) {
                     Text("Card \(currentIndex + 1) of \(deck.cards.count)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                     
-                    CardFlipView(
-                        front: deck.cards[currentIndex].front,
-                        back: deck.cards[currentIndex].back,
-                        isFlipped: $isFlipped,
-                        rotation: $rotation
-                    )
+                    if currentIndex < deck.cards.count {
+                        CardFlipView(
+                            front: deck.cards[currentIndex].front,
+                            back: deck.cards[currentIndex].back,
+                            isFlipped: $isFlipped,
+                            rotation: $rotation
+                        )
                     .onTapGesture {
                         withAnimation(.easeInOut(duration: 0.5)) {
                             isFlipped.toggle()
