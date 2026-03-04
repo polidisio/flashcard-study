@@ -3,9 +3,9 @@ import UniformTypeIdentifiers
 
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
-    @Binding var decks: @State private var deckName = ""
-    @State private [Deck]
-    var importedCards: [Card] = []
+    @Binding var decks: [Deck]
+    @State private var deckName = ""
+    @State private var importedCards: [Card] = []
     @State private var showingFilePicker = false
     @State private var showingError = false
     @State private var errorMessage = ""
@@ -152,7 +152,6 @@ struct ImportView: View {
         let range = NSRange(content.startIndex..., in: content)
         let matches = regex.matches(in: content, options: [], range: range)
         
-        var startIndex = 0
         for (index, match) in matches.enumerated() {
             guard let rowRange = Range(match.range(at: 1), in: content) else { continue }
             let rowContent = String(content[rowRange])
