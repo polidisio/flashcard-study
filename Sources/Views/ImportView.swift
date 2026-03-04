@@ -1,6 +1,12 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+extension UTType {
+    static var xlsx: UTType {
+        UTType(filenameExtension: "xlsx") ?? .data
+    }
+}
+
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var decks: [Deck]
