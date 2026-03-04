@@ -15,7 +15,6 @@
 		3E70F7C7B919094BD9C1CF48 /* HistoryCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 639254D10131FB38338B5787 /* HistoryCards.swift */; };
 		76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9C587F4C731424208736D /* SampleDecks.swift */; };
 		8AC455C3C11A5DAAD0614412 /* LanguageCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3F12EA115B285E1B5517DC /* LanguageCards.swift */; };
-		BD03F185B6C6F1E8E62E981E /* AddDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E91A046D38F3C4B564062A49 /* AddDeckView.swift */; };
 		BE9391710C2222EBA3116209 /* FlashcardStudyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6C9A089A8588473B0F22A12 /* FlashcardStudyApp.swift */; };
 		C18B612EFFA74527F1F1910A /* ImportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 560E47B27877FFB89E86E386 /* ImportView.swift */; };
 		F09B337FC20EA0FD11140DD4 /* GeographyCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600902A572D87F1BD46ED1AC /* GeographyCards.swift */; };
@@ -36,7 +35,6 @@
 		918D4B107E2F86A4FEC2FB51 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		956B4533345831B6F4C24B62 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		A6C9A089A8588473B0F22A12 /* FlashcardStudyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashcardStudyApp.swift; sourceTree = "<group>"; };
-		E91A046D38F3C4B564062A49 /* AddDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDeckView.swift; sourceTree = "<group>"; };
 		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE0F722E33A8704A2F29871A /* StudyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -45,7 +43,6 @@
 		06C0C9B283A8FF2E8D311212 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				E91A046D38F3C4B564062A49 /* AddDeckView.swift */,
 				918D4B107E2F86A4FEC2FB51 /* ContentView.swift */,
 				292683B3D8490361C2A52174 /* ExcelParser.swift */,
 				6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */,
@@ -170,7 +167,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD03F185B6C6F1E8E62E981E /* AddDeckView.swift in Sources */,
 				F576F6442407790774664B5A /* Card.swift in Sources */,
 				120A78A9DE0714879B3164B1 /* ContentView.swift in Sources */,
 				31A0D72210948D4836705072 /* Deck.swift in Sources */,
