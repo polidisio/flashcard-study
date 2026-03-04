@@ -290,6 +290,9 @@ struct StudyView: View {
         stats.markStudied(correct: correct)
         deckStore.updateCardStats(stats, for: cardId, in: deckId)
         
+        // Update deck stats immediately
+        deckStore.updateDeckStats(for: deckId)
+        
         // Update progress (spaced repetition)
         var deckProgress = deckStore.getProgress(for: deckId)
         var cardProgress = deckProgress.getProgress(for: cardId)
