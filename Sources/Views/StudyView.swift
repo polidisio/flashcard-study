@@ -10,76 +10,89 @@ struct StudyView: View {
     var body: some View {
         NavigationStack {
             if deck.cards.isEmpty {
-                VStack(spacing: 16) {
-                    Image(systemName: "rectangle.on.rectangle.slash")
-                        .font(.system(size: 60))
-                        .foregroundStyle(Color.gothicAccent)
-                    Text("No Cards in Deck")
-                        .font(.title2)
-                    Text("Add some cards to start studying")
-                        .foregroundStyle(.secondary)
-                }
+                emptyStateView
             } else {
-                VStack(spacing: 30) {
-                    Text("Card \(currentIndex + 1) of \(deck.cards.count)")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    
-                    if currentIndex < deck.cards.count {
-                        CardFlipView(
-                            front: deck.cards[currentIndex].front,
-                            back: deck.cards[currentIndex].back,
-                            isFlipped: $isFlipped,
-                            rotation: $rotation
-                        )
-                        .onTapGesture {
-                            withAnimation(.easeInOut(duration: 0.5)) {
-                                isFlipped.toggle()
-                                rotation += 180
-                            }
-                        }
-                        
-                        HStack(spacing: 40) {
-                            Button {
-                                previousCard()
-                            } label: {
-                                Image(systemName: "chevron.left.circle.fill")
-                                    .font(.system(size: 50))
-                            }
-                            .disabled(currentIndex == 0)
-                            .foregroundStyle(currentIndex == 0 ? Color.gray : Color.gothicAccent)
-                            
-                            Button {
-                                nextCard()
-                            } label: {
-                                Image(systemName: "chevron.right.circle.fill")
-                                    .font(.system(size: 50))
-                            }
-                            .disabled(currentIndex == deck.cards.count - 1)
-                            .foregroundStyle(currentIndex == deck.cards.count - 1 ? Color.gray : Color.gothicAccent)
-                        }
-                        .padding(.top, 20)
-                        
-                        Text("Tap card to flip")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.gothicBackground)
-            .navigationTitle(deck.name)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Done") {
-                        dismiss()
-                    }
-                }
+                cardView
             }
         }
         .preferredColorScheme(.dark)
+    }
+    
+    private var emptyStateView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "rectangle.on.rectangle.slash")
+                .font(.system(size: 60))
+                .foregroundStyle(Color.gothicAccent)
+            Text("No Cards in Deck")
+                .font(.title2)
+            Text("Add some cards to start studying")
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.gothicBackground)
+        .navigationTitle(deck.name)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Done") { dismiss() }
+            }
+        }
+    }
+    
+    private var cardView: some View {
+        VStack(spacing: 30) {
+            Text("Card \(currentIndex + 1) of \(deck.cards.count)")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            
+            if currentIndex < deck.cards.count {
+                CardFlipView(
+                    front: deck.cards[currentIndex].front,
+                    back: deck.cards[currentIndex].back,
+                    isFlipped: $isFlipped,
+                    rotation: $rotation
+                )
+                .onTapGesture {
+                    withAnimation(.easeInOut(duration: 0.5)) {
+                        isFlipped.toggle()
+                        rotation += 180
+                    }
+                }
+            }
+            
+            navigationButtons
+            
+            Text("Tap card to flip")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.gothicBackground)
+        .navigationTitle(deck.name)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button("Done") { dismiss() }
+            }
+        }
+    }
+    
+    private var navigationButtons: some View {
+        HStack(spacing: 40) {
+            Button { previousCard() } label: {
+                Image(systemName: "chevron.left.circle.fill")
+                    .font(.system(size: 50))
+            }
+            .disabled(currentIndex == 0)
+            .foregroundStyle(currentIndex == 0 ? Color.gray : Color.gothicAccent)
+            
+            Button { nextCard() } label: {
+                Image(systemName: "chevron.right.circle.fill")
+                    .font(.system(size: 50))
+            }
+            .disabled(currentIndex >= deck.cards.count - 1)
+            .foregroundStyle(currentIndex >= deck.cards.count - 1 ? Color.gray : Color.gothicAccent)
+        }
     }
     
     private func nextCard() {
@@ -145,13 +158,13 @@ struct CardFace: View {
                 .foregroundStyle(Color.gothicText)
                 .padding()
         }
-        .frame(width: 300, height: 400)
+        .frame(width: 280, height: 350)
     }
 }
 
 #Preview {
-    StudyView(deck: .constant(Deck(name: "Test Deck", cards: [
-        Card(front: "Question 1", back: "Answer 1"),
-        Card(front: "Question 2", back: "Answer 2")
+    StudyView(deck: .constant(Deck(name: "Test", cards: [
+        Card(front: "Q1", back: "A1"),
+        Card(front: "Q2", back: "A2")
     ])))
 }
