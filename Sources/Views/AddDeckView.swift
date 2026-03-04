@@ -3,7 +3,7 @@ import UniformTypeIdentifiers
 
 extension UTType {
     static var xlsx: UTType {
-        UTType(filenameExtension: "xlsx") ?? .data
+        UTType(filenameExtension: "xlsx") ?? UTType.data
     }
 }
 
@@ -15,12 +15,7 @@ struct AddDeckView: View {
     @State private var showingFilePicker = false
     @State private var showingError = false
     @State private var errorMessage = ""
-    @State private var selectedFileType: FileType = .csv
-    
-    enum FileType: String, CaseIterable {
-        case csv = "CSV"
-        case excel = "Excel"
-    }
+    @State private var useExcel = false
     
     var body: some View {
         NavigationStack {
@@ -30,17 +25,15 @@ struct AddDeckView: View {
                 }
                 
                 Section("Import Format") {
-                    Picker("Format", selection: $selectedFileType) {
-                        ForEach(FileType.allCases, id: \.self) { type in
-                            Text(type.rawValue).tag(type)
+                    Toggle("Excel (.xlsx)", isOn: $useExcel)
+                        .onChange(of: useExcel) { _, _ in
+                            showingFilePicker = true
                         }
-                    }
-                    .pickerStyle(.segmented)
                 }
                 
                 Section("Cards") {
                     if importedCards.isEmpty {
-                        Text("No cards imported")
+                        Text("No cards imported. Tap file picker above.")
                             .foregroundStyle(.secondary)
                     } else {
                         Text("\(importedCards.count) cards imported")
@@ -62,6 +55,14 @@ struct AddDeckView: View {
                         }
                     }
                 }
+                
+                Section {
+                    Button {
+                        showingFilePicker = true
+                    } label: {
+                        Label("Select File", systemImage: "doc")
+                    }
+                }
             }
             .navigationTitle("New Deck")
             .toolbar {
@@ -75,7 +76,7 @@ struct AddDeckView: View {
             }
             .fileImporter(
                 isPresented: $showingFilePicker,
-                allowedContentTypes: selectedFileType == .csv ? [.commaSeparatedText] : [.xlsx],
+                allowedContentTypes: useExcel ? [.xlsx] : [.commaSeparatedText, .plainText],
                 allowsMultipleSelection: false
             ) { result in
                 handleFileSelection(result)
@@ -84,9 +85,6 @@ struct AddDeckView: View {
                 Button("OK", role: .cancel) { }
             } message: {
                 Text(errorMessage)
-            }
-            .onAppear {
-                showingFilePicker = true
             }
         }
     }
@@ -97,10 +95,10 @@ struct AddDeckView: View {
             guard let url = urls.first else { return }
             
             do {
-                if selectedFileType == .csv {
-                    importedCards = try parseCSV(url: url)
-                } else {
+                if useExcel {
                     importedCards = try parseExcel(url: url)
+                } else {
+                    importedCards = try parseCSV(url: url)
                 }
                 
                 if importedCards.isEmpty {
