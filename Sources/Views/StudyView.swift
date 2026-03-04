@@ -15,6 +15,7 @@ struct StudyView: View {
     @State private var editingBack = ""
     @State private var editingCardId: UUID?
     @State private var studyMode: StudyMode = .all
+    @State private var showingStats = false
     
     enum StudyMode: String, CaseIterable {
         case all = "All Cards"
@@ -90,7 +91,10 @@ struct StudyView: View {
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Done") { dismiss() }
+                Button("Done") {
+                    deckStore.updateDeckStats(for: deck.id)
+                    dismiss()
+                }
             }
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -133,6 +137,10 @@ struct StudyView: View {
                         Label("Delete Card", systemImage: "trash")
                     }
                 }
+                
+                if let card = currentCard {
+                    cardStatsView(for: card)
+                }
             }
             
             if isFlipped {
@@ -171,15 +179,63 @@ struct StudyView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button("Done") { dismiss() }
-            }
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showingAddCard = true
-                } label: {
-                    Image(systemName: "plus")
+                Button("Done") {
+                    deckStore.updateDeckStats(for: deck.id)
+                    dismiss()
                 }
             }
+            ToolbarItem(placement: .primaryAction) {
+                HStack {
+                    Button {
+                        showingStats = true
+                    } label: {
+                        Image(systemName: "chart.bar")
+                    }
+                    Button {
+                        showingAddCard = true
+                    } label: {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showingStats) {
+            StatsView(deck: deck)
+        }
+    }
+    
+    private func cardStatsView(for card: Card) -> some View {
+        let stats = deckStore.getCardStats(for: card.id, in: deck.id)
+        
+        return VStack(spacing: 8) {
+            HStack(spacing: 16) {
+                StatBadge(title: "Level", value: "\(stats.level)", color: levelColor(for: stats.level))
+                StatBadge(title: "Precision", value: String(format: "%.0f%%", stats.precision), color: precisionColor(for: stats.precision))
+            }
+            .padding(.top, 8)
+            
+            HStack(spacing: 16) {
+                StatBadge(title: "Studied", value: "\(stats.timesStudied)", color: .gray)
+                StatBadge(title: "Correct", value: "\(stats.timesCorrect)", color: .green)
+                StatBadge(title: "Incorrect", value: "\(stats.timesIncorrect)", color: .red)
+            }
+        }
+    }
+    
+    private func levelColor(for level: Int) -> Color {
+        switch level {
+        case 0...3: return .red
+        case 4...6: return .orange
+        case 7...9: return .green
+        default: return .blue
+        }
+    }
+    
+    private func precisionColor(for precision: Double) -> Color {
+        switch precision {
+        case 0..<50: return .red
+        case 50..<75: return .orange
+        default: return .green
         }
     }
     
@@ -218,12 +274,18 @@ struct StudyView: View {
         let deckId = deck.id
         let cardId = card.id
         
+        // Update progress (spaced repetition)
         var deckProgress = deckStore.getProgress(for: deckId)
         var cardProgress = deckProgress.getProgress(for: cardId)
-        
         cardProgress = SpacedRepetition.calculateNextReview(currentProgress: cardProgress, quality: quality)
         deckProgress.updateProgress(cardProgress)
         deckStore.updateDeckProgress(deckProgress, for: deckId)
+        
+        // Update card stats
+        var stats = deckStore.getCardStats(for: cardId, in: deckId)
+        let isCorrect = quality != .again
+        stats.markStudied(correct: isCorrect)
+        deckStore.updateCardStats(stats, for: cardId, in: deckId)
         
         moveToNextCard()
     }
@@ -448,6 +510,28 @@ struct CardFace: View {
                 .padding()
         }
         .frame(width: 280, height: 350)
+    }
+}
+
+struct StatBadge: View {
+    let title: String
+    let value: String
+    let color: Color
+    
+    var body: some View {
+        VStack(spacing: 2) {
+            Text(title)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundStyle(color)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(color.opacity(0.15))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 }
 
