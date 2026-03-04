@@ -1,17 +1,11 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
-extension UTType {
-    static var xlsx: UTType {
-        UTType(filenameExtension: "xlsx") ?? UTType.data
-    }
-}
-
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
-    @Binding var decks: [Deck]
-    @State private var deckName = ""
-    @State private var importedCards: [Card] = []
+    @Binding var decks: @State private var deckName = ""
+    @State private [Deck]
+    var importedCards: [Card] = []
     @State private var showingFilePicker = false
     @State private var showingError = false
     @State private var errorMessage = ""
@@ -24,45 +18,37 @@ struct ImportView: View {
                     TextField("Enter deck name", text: $deckName)
                 }
                 
-                Section("Import Format") {
-                    Toggle("Excel (.xlsx)", isOn: $useExcel)
-                        .onChange(of: useExcel) { _, _ in
-                            showingFilePicker = true
-                        }
-                    
-                    Button {
-                        showingFilePicker = true
-                    } label: {
-                        Label(useExcel ? "Select Excel File" : "Select CSV File", systemImage: "doc")
+                Section("Format") {
+                    Picker("Format", selection: $useExcel) {
+                        Text("CSV").tag(false)
+                        Text("Excel").tag(true)
                     }
+                    .pickerStyle(.segmented)
+                    
+                    Button("Select File") {
+                        showingFilePicker = true
+                    }
+                    .frame(maxWidth: .infinity)
                 }
                 
-                Section("Cards") {
+                Section("Preview") {
                     if importedCards.isEmpty {
-                        Text("No cards imported yet")
+                        Text("No cards loaded")
                             .foregroundStyle(.secondary)
                     } else {
-                        Text("\(importedCards.count) cards ready to import")
+                        Text("\(importedCards.count) cards ready")
                             .foregroundStyle(.green)
                         
-                        ForEach(importedCards.prefix(5)) { card in
+                        ForEach(importedCards.prefix(3)) { card in
                             VStack(alignment: .leading) {
-                                Text(card.front)
-                                    .font(.headline)
-                                Text(card.back)
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
+                                Text(card.front).font(.caption).bold()
+                                Text(card.back).font(.caption).foregroundStyle(.secondary)
                             }
-                        }
-                        
-                        if importedCards.count > 5 {
-                            Text("...and \(importedCards.count - 5) more")
-                                .foregroundStyle(.secondary)
                         }
                     }
                 }
             }
-            .navigationTitle("Import Cards")
+            .navigationTitle("Import")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -79,7 +65,7 @@ struct ImportView: View {
                 allowedContentTypes: useExcel ? [.xlsx] : [.commaSeparatedText, .plainText],
                 allowsMultipleSelection: false
             ) { result in
-                handleFileSelection(result)
+                handleFile(result)
             }
             .alert("Error", isPresented: $showingError) {
                 Button("OK", role: .cancel) { }
@@ -89,28 +75,26 @@ struct ImportView: View {
         }
     }
     
-    private func handleFileSelection(_ result: Result<[URL], Error>) {
+    private func handleFile(_ result: Result<[URL], Error>) {
         switch result {
         case .success(let urls):
             guard let url = urls.first else { return }
-            
             do {
                 if useExcel {
                     importedCards = try parseExcel(url: url)
                 } else {
                     importedCards = try parseCSV(url: url)
                 }
-                
                 if importedCards.isEmpty {
-                    errorMessage = "No valid cards found"
+                    errorMessage = "No cards found"
                     showingError = true
                 }
             } catch {
-                errorMessage = "Error: \(error.localizedDescription)"
+                errorMessage = error.localizedDescription
                 showingError = true
             }
         case .failure(let error):
-            errorMessage = "Error: \(error.localizedDescription)"
+            errorMessage = error.localizedDescription
             showingError = true
         }
     }
@@ -120,24 +104,25 @@ struct ImportView: View {
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
         
         let content = try String(contentsOf: url, encoding: .utf8)
-        
+        return parseCSVContent(content)
+    }
+    
+    private func parseCSVContent(_ content: String) -> [Card] {
         var cards: [Card] = []
         let lines = content.components(separatedBy: .newlines)
         
-        var startIndex = 0
-        if let firstLine = lines.first?.lowercased(),
-           firstLine.contains("front") && firstLine.contains("back") {
-            startIndex = 1
+        var start = 0
+        if let first = lines.first?.lowercased(), first.contains("front") {
+            start = 1
         }
         
-        for i in startIndex..<lines.count {
-            let line = lines[i].trimmingCharacters(in: .whitespaces)
-            guard !line.isEmpty else { continue }
-            
-            let fields = line.components(separatedBy: ",")
-            if fields.count >= 2 {
-                let front = fields[0].trimmingCharacters(in: .whitespaces)
-                let back = fields[1].trimmingCharacters(in: .whitespaces)
+        for line in lines.dropFirst(start) {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            guard !trimmed.isEmpty else { continue }
+            let parts = trimmed.components(separatedBy: ",")
+            if parts.count >= 2 {
+                let front = parts[0].trimmingCharacters(in: .whitespaces)
+                let back = parts[1].trimmingCharacters(in: .whitespaces)
                 if !front.isEmpty && !back.isEmpty {
                     cards.append(Card(front: front, back: back))
                 }
@@ -147,21 +132,56 @@ struct ImportView: View {
     }
     
     private func parseExcel(url: URL) throws -> [Card] {
-        let rows = try ExcelParser.parse(url: url)
-        var cards: [Card] = []
+        let accessing = url.startAccessingSecurityScopedResource()
+        defer { if accessing { url.stopAccessingSecurityScopedResource() } }
         
-        var startIndex = 0
-        if let firstRow = rows.first,
-           firstRow.count >= 2,
-           firstRow[0].lowercased().contains("front") && firstRow[1].lowercased().contains("back") {
-            startIndex = 1
+        let data = try Data(contentsOf: url)
+        
+        guard let content = String(data: data, encoding: .utf8) else {
+            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot read file"])
         }
         
-        for i in startIndex..<rows.count {
-            let row = rows[i]
-            if row.count >= 2 {
-                let front = row[0].trimmingCharacters(in: .whitespaces)
-                let back = row[1].trimmingCharacters(in: .whitespaces)
+        var cards: [Card] = []
+        
+        // Find all <row> elements
+        let rowPattern = "<row[^>]*>(.*?)</row>"
+        guard let regex = try? NSRegularExpression(pattern: rowPattern, options: [.dotMatchesLineSeparators]) else {
+            return cards
+        }
+        
+        let range = NSRange(content.startIndex..., in: content)
+        let matches = regex.matches(in: content, options: [], range: range)
+        
+        var startIndex = 0
+        for (index, match) in matches.enumerated() {
+            guard let rowRange = Range(match.range(at: 1), in: content) else { continue }
+            let rowContent = String(content[rowRange])
+            
+            var rowData: [String] = []
+            
+            // Find all cell values
+            let cellPattern = "<c[^>]*>(<is><t>(.*?)</t></is>|<v>(.*?)</v>)?</c>"
+            let cellRegex = try? NSRegularExpression(pattern: cellPattern, options: [.dotMatchesLineSeparators])
+            let cellRange = NSRange(rowContent.startIndex..., in: rowContent)
+            
+            if let cellMatches = cellRegex?.matches(in: rowContent, options: [], range: cellRange) {
+                for cellMatch in cellMatches {
+                    if let tRange = Range(cellMatch.range(at: 2), in: rowContent) {
+                        rowData.append(String(rowContent[tRange]))
+                    } else if let vRange = Range(cellMatch.range(at: 3), in: rowContent) {
+                        rowData.append(String(rowContent[vRange]))
+                    }
+                }
+            }
+            
+            // Skip header row
+            if index == 0 && rowData.first?.lowercased().contains("front") == true {
+                continue
+            }
+            
+            if rowData.count >= 2 {
+                let front = rowData[0].trimmingCharacters(in: .whitespaces)
+                let back = rowData[1].trimmingCharacters(in: .whitespaces)
                 if !front.isEmpty && !back.isEmpty {
                     cards.append(Card(front: front, back: back))
                 }
@@ -176,8 +196,4 @@ struct ImportView: View {
         decks.append(newDeck)
         dismiss()
     }
-}
-
-#Preview {
-    ImportView(decks: .constant([]))
 }
