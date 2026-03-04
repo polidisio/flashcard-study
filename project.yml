@@ -16,9 +16,6 @@ packages:
   ZIPFoundation:
     url: https://github.com/weichsel/ZIPFoundation
     from: "0.9.0"
-  SQLite:
-    url: https://github.com/stephencelis/SQLite.swift
-    from: "0.15.0"
 
 targets:
   FlashcardStudy:
@@ -28,8 +25,6 @@ targets:
       - path: Sources
     dependencies:
       - package: ZIPFoundation
-      - package: SQLite
-        product: SQLite
     settings:
       base:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES

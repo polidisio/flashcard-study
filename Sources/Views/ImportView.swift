@@ -6,16 +6,11 @@ extension UTType {
     static var xlsx: UTType {
         UTType(filenameExtension: "xlsx") ?? .data
     }
-    
-    static var apkg: UTType {
-        UTType(filenameExtension: "apkg") ?? .zip
-    }
 }
 
 enum ImportFormat: String, CaseIterable {
     case csv = "CSV"
     case excel = "Excel"
-    case apkg = "Anki (.apkg)"
 }
 
 struct ImportView: View {
@@ -27,7 +22,6 @@ struct ImportView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
     @State private var selectedFormat: ImportFormat = .csv
-    @State private var isImporting = false
     
     private var fileTypes: [UTType] {
         switch selectedFormat {
@@ -35,8 +29,6 @@ struct ImportView: View {
             return [.commaSeparatedText, .plainText]
         case .excel:
             return [.xlsx]
-        case .apkg:
-            return [.apkg, .zip]
         }
     }
     
@@ -59,13 +51,6 @@ struct ImportView: View {
                         showingFilePicker = true
                     }
                     .frame(maxWidth: .infinity)
-                    
-                    if isImporting {
-                        HStack {
-                            ProgressView()
-                            Text("Importing...")
-                        }
-                    }
                 }
                 
                 Section("Preview") {
@@ -116,36 +101,24 @@ struct ImportView: View {
         switch result {
         case .success(let urls):
             guard let url = urls.first else { return }
-            isImporting = true
-            Task {
-                do {
-                    switch selectedFormat {
-                    case .csv:
-                        importedCards = try parseCSV(url: url)
-                    case .excel:
-                        importedCards = try parseExcel(url: url)
-                    case .apkg:
-                        let importer = APKImporter()
-                        let importResult = try await importer.importAPK(from: url)
-                        importedCards = importResult.cards
-                        if deckName.isEmpty {
-                            deckName = importResult.deckName
-                        }
-                    }
-                    if importedCards.isEmpty {
-                        errorMessage = "No cards found"
-                        showingError = true
-                    }
-                } catch {
-                    errorMessage = error.localizedDescription
+            do {
+                switch selectedFormat {
+                case .csv:
+                    importedCards = try parseCSV(url: url)
+                case .excel:
+                    importedCards = try parseExcel(url: url)
+                }
+                if importedCards.isEmpty {
+                    errorMessage = "No cards found"
                     showingError = true
                 }
-                isImporting = false
+            } catch {
+                errorMessage = error.localizedDescription
+                showingError = true
             }
         case .failure(let error):
             errorMessage = error.localizedDescription
             showingError = true
-            isImporting = false
         }
     }
     
