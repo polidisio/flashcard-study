@@ -244,51 +244,59 @@ struct StudyView: View {
     
     private var reviewButtons: some View {
         HStack(spacing: 12) {
-            ForEach(ReviewQuality.allCases, id: \.rawValue) { quality in
-                Button {
-                    rateCard(quality: quality)
-                } label: {
-                    Text(quality.description)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(buttonColor(for: quality))
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
+            Button {
+                rateCard(correct: false)
+            } label: {
+                HStack {
+                    Image(systemName: "xmark")
+                    Text("Incorrect")
                 }
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.red)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+            
+            Button {
+                rateCard(correct: true)
+            } label: {
+                HStack {
+                    Image(systemName: "checkmark")
+                    Text("Correct")
+                }
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(Color.green)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
             }
         }
         .padding(.horizontal)
     }
     
-    private func buttonColor(for quality: ReviewQuality) -> Color {
-        switch quality {
-        case .again: return .red
-        case .hard: return .orange
-        case .good: return .green
-        case .easy: return .blue
-        }
-    }
-    
-    private func rateCard(quality: ReviewQuality) {
+    private func rateCard(correct: Bool) {
         guard let card = currentCard else { return }
         
         let deckId = deck.id
         let cardId = card.id
         
+        // Update card stats
+        var stats = deckStore.getCardStats(for: cardId, in: deckId)
+        stats.markStudied(correct: correct)
+        deckStore.updateCardStats(stats, for: cardId, in: deckId)
+        
         // Update progress (spaced repetition)
         var deckProgress = deckStore.getProgress(for: deckId)
         var cardProgress = deckProgress.getProgress(for: cardId)
+        let quality: ReviewQuality = correct ? .good : .again
         cardProgress = SpacedRepetition.calculateNextReview(currentProgress: cardProgress, quality: quality)
         deckProgress.updateProgress(cardProgress)
         deckStore.updateDeckProgress(deckProgress, for: deckId)
-        
-        // Update card stats
-        var stats = deckStore.getCardStats(for: cardId, in: deckId)
-        let isCorrect = quality != .again
-        stats.markStudied(correct: isCorrect)
-        deckStore.updateCardStats(stats, for: cardId, in: deckId)
         
         moveToNextCard()
     }
