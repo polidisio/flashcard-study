@@ -85,39 +85,3 @@ struct IndexItem: Identifiable {
     let index: Int
 }
 
-struct AddDeckView: View {
-    @Environment(\.dismiss) var dismiss
-    @Binding var decks: [Deck]
-    @State private var deckName = ""
-    
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 20) {
-                TextField("Deck Name", text: $deckName)
-                    .textFieldStyle(.roundedBorder)
-                    .padding()
-                
-                Button("Create Deck") {
-                    if !deckName.isEmpty {
-                        decks.append(Deck(name: deckName))
-                        dismiss()
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(Color.gothicAccent)
-                .disabled(deckName.isEmpty)
-                
-                Spacer()
-            }
-            .padding()
-            .background(Color.gothicBackground)
-            .navigationTitle("New Deck")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-            }
-        }
-    }
-}
