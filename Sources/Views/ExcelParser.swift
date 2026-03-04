@@ -3,53 +3,51 @@ import Foundation
 struct ExcelParser {
     
     static func parse(url: URL) throws -> [[String]] {
-        // iOS doesn't allow file system access, so we'll parse directly
         let accessing = url.startAccessingSecurityScopedResource()
         defer { 
             if accessing { url.stopAccessingSecurityScopedResource() } 
         }
         
-        // Read file as binary data
+        // Read file data
         let data = try Data(contentsOf: url)
         
-        // Check if it's a valid ZIP/XLSX file
-        guard data.count > 2 else {
-            throw NSError(domain: "ExcelParser", code: 1, userInfo: [NSLocalizedDescriptionKey: "File too small"])
-        }
-        
-        // Try to find XML content directly in the data
         guard let content = String(data: data, encoding: .utf8) else {
-            throw NSError(domain: "ExcelParser", code: 2, userInfo: [NSLocalizedDescriptionKey: "Could not read file"])
+            throw NSError(domain: "ExcelParser", code: 1, userInfo: [NSLocalizedDescriptionKey: "Could not read file as text"])
         }
         
-        // Look for shared strings and sheet data
+        // Simple parsing - look for shared strings and row data
         var result: [[String]] = []
         
-        // Simple XML parsing - look for row and cell patterns
-        let lines = content.components(separatedBy: .newlines)
-        var currentRow: [String] = []
+        // Find all rows with data
+        let rows = content.components(separatedBy: "<row ")
         
-        for line in lines {
-            // Check for row start
-            if line.contains("<row ") || line.contains("<row>") {
-                if !currentRow.isEmpty {
-                    result.append(currentRow)
-                    currentRow = []
+        for row in rows.dropFirst() {
+            var rowData: [String] = []
+            
+            // Extract cell values
+            let cells = row.components(separatedBy: "<c ")
+            for cell in cells {
+                // Look for inline string <is><t>
+                if cell.contains("<is><t>") {
+                    if let start = cell.range(of: "<is><t>"),
+                       let end = cell.range(of: "</t></is>") {
+                        let value = String(cell[start.upperBound..<end.lowerBound])
+                        rowData.append(value)
+                    }
+                }
+                // Look for value <v>
+                else if cell.contains("<v>") {
+                    if let start = cell.range(of: "<v>"),
+                       let end = cell.range(of: "</v>") {
+                        let value = String(cell[start.upperBound..<end.lowerBound])
+                        rowData.append(value)
+                    }
                 }
             }
             
-            // Extract cell values
-            if line.contains("<v>") || line.contains("<t>") {
-                if let startRange = line.range(of: ">"),
-                   let endRange = line.range(of: "</v>") {
-                    let value = String(line[startRange.upperBound..<endRange.lowerBound])
-                    currentRow.append(value)
-                }
+            if !rowData.isEmpty {
+                result.append(rowData)
             }
-        }
-        
-        if !currentRow.isEmpty {
-            result.append(currentRow)
         }
         
         return result
