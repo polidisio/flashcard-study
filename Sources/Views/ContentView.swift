@@ -3,14 +3,18 @@ import SwiftUI
 struct ContentView: View {
     @State private var decks: [Deck] = []
     @State private var showingAddDeck = false
+    @State private var showingImport = false
     @State private var selectedDeck: Deck?
     
     var body: some View {
         NavigationStack {
-            DeckListView(decks: $decks, selectedDeck: $selectedDeck, showingAddDeck: $showingAddDeck)
+            DeckListView(decks: $decks, selectedDeck: $selectedDeck, showingAddDeck: $showingAddDeck, showingImport: $showingImport)
                 .navigationTitle("Decks")
                 .sheet(isPresented: $showingAddDeck) {
                     AddDeckView(decks: $decks)
+                }
+                .sheet(isPresented: $showingImport) {
+                    ImportView(decks: $decks)
                 }
                 .sheet(item: $selectedDeck) { deck in
                     StudyView(deck: binding(for: deck) ?? $decks[0])
@@ -29,6 +33,7 @@ struct DeckListView: View {
     @Binding var decks: [Deck]
     @Binding var selectedDeck: Deck?
     @Binding var showingAddDeck: Bool
+    @Binding var showingImport: Bool
     
     var body: some View {
         List {
@@ -63,6 +68,14 @@ struct DeckListView: View {
         .listStyle(.plain)
         .background(Color.gothicBackground)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    showingImport = true
+                } label: {
+                    Image(systemName: "square.and.arrow.down")
+                        .foregroundStyle(Color.gothicAccent)
+                }
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     showingAddDeck = true
