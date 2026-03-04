@@ -85,3 +85,6 @@ struct IndexItem: Identifiable {
     let index: Int
 }
 
+#Preview {
+    ContentView()
+}

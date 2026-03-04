@@ -1,91 +1,82 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+extension UTType {
+    static var xlsx: UTType {
+        UTType(filenameExtension: "xlsx") ?? UTType.data
+    }
+}
+
 struct ImportView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var decks: [Deck]
+    @State private var deckName = ""
     @State private var importedCards: [Card] = []
     @State private var showingFilePicker = false
-    @State private var selectedDeckIndex = 0
     @State private var showingError = false
     @State private var errorMessage = ""
-    @State private var newDeckName = ""
-    @State private var showingNewDeckSheet = false
+    @State private var useExcel = false
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                Image(systemName: "square.and.arrow.down")
-                    .font(.system(size: 60))
-                    .foregroundStyle(Color.gothicAccent)
-                
-                Text("Import Cards")
-                    .font(.title2)
-                
-                Text("Import flashcards from CSV files.\nFormat: front,back (first row is header)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                
-                Button {
-                    showingFilePicker = true
-                } label: {
-                    Label("Select CSV File", systemImage: "doc.text")
+            Form {
+                Section("Deck Name") {
+                    TextField("Enter deck name", text: $deckName)
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(Color.gothicAccent)
                 
-                if !importedCards.isEmpty {
-                    Divider()
+                Section("Import Format") {
+                    Toggle("Excel (.xlsx)", isOn: $useExcel)
+                        .onChange(of: useExcel) { _, _ in
+                            showingFilePicker = true
+                        }
                     
-                    Text("Imported \(importedCards.count) cards")
-                        .font(.headline)
-                        .foregroundStyle(Color.gothicAccent)
-                    
-                    List(importedCards) { card in
-                        VStack(alignment: .leading) {
-                            Text(card.front)
-                                .font(.headline)
-                            Text(card.back)
-                                .font(.subheadline)
+                    Button {
+                        showingFilePicker = true
+                    } label: {
+                        Label(useExcel ? "Select Excel File" : "Select CSV File", systemImage: "doc")
+                    }
+                }
+                
+                Section("Cards") {
+                    if importedCards.isEmpty {
+                        Text("No cards imported yet")
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("\(importedCards.count) cards ready to import")
+                            .foregroundStyle(.green)
+                        
+                        ForEach(importedCards.prefix(5)) { card in
+                            VStack(alignment: .leading) {
+                                Text(card.front)
+                                    .font(.headline)
+                                Text(card.back)
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        
+                        if importedCards.count > 5 {
+                            Text("...and \(importedCards.count - 5) more")
                                 .foregroundStyle(.secondary)
                         }
                     }
-                    .frame(height: 200)
-                    
-                    TextField("New deck name", text: $newDeckName)
-                        .textFieldStyle(.roundedBorder)
-                        .padding(.horizontal)
-                    
-                    Button("Create Deck with Cards") {
-                        if !newDeckName.isEmpty {
-                            var newDeck = Deck(name: newDeckName)
-                            newDeck.cards = importedCards
-                            decks.append(newDeck)
-                            dismiss()
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(Color.gothicAccent)
-                    .disabled(newDeckName.isEmpty)
                 }
-                
-                Spacer()
             }
-            .padding()
-            .background(Color.gothicBackground)
-            .navigationTitle("Import")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Import Cards")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Close") {
-                        dismiss()
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Import") {
+                        importDeck()
                     }
+                    .disabled(deckName.isEmpty || importedCards.isEmpty)
                 }
             }
             .fileImporter(
                 isPresented: $showingFilePicker,
-                allowedContentTypes: [.commaSeparatedText, .plainText],
+                allowedContentTypes: useExcel ? [.xlsx] : [.commaSeparatedText, .plainText],
                 allowsMultipleSelection: false
             ) { result in
                 handleFileSelection(result)
@@ -103,32 +94,33 @@ struct ImportView: View {
         case .success(let urls):
             guard let url = urls.first else { return }
             
-            let accessing = url.startAccessingSecurityScopedResource()
-            defer { 
-                if accessing { 
-                    url.stopAccessingSecurityScopedResource() 
-                } 
-            }
-            
             do {
-                let content = try String(contentsOf: url, encoding: .utf8)
-                importedCards = parseCSV(content: content)
+                if useExcel {
+                    importedCards = try parseExcel(url: url)
+                } else {
+                    importedCards = try parseCSV(url: url)
+                }
                 
                 if importedCards.isEmpty {
-                    errorMessage = "No valid cards found in file"
+                    errorMessage = "No valid cards found"
                     showingError = true
                 }
             } catch {
-                errorMessage = "Error reading file: \(error.localizedDescription)"
+                errorMessage = "Error: \(error.localizedDescription)"
                 showingError = true
             }
         case .failure(let error):
-            errorMessage = "Error selecting file: \(error.localizedDescription)"
+            errorMessage = "Error: \(error.localizedDescription)"
             showingError = true
         }
     }
     
-    private func parseCSV(content: String) -> [Card] {
+    private func parseCSV(url: URL) throws -> [Card] {
+        let accessing = url.startAccessingSecurityScopedResource()
+        defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+        
+        let content = try String(contentsOf: url, encoding: .utf8)
+        
         var cards: [Card] = []
         let lines = content.components(separatedBy: .newlines)
         
@@ -142,10 +134,34 @@ struct ImportView: View {
             let line = lines[i].trimmingCharacters(in: .whitespaces)
             guard !line.isEmpty else { continue }
             
-            let fields = parseCSVLine(line)
+            let fields = line.components(separatedBy: ",")
             if fields.count >= 2 {
                 let front = fields[0].trimmingCharacters(in: .whitespaces)
                 let back = fields[1].trimmingCharacters(in: .whitespaces)
+                if !front.isEmpty && !back.isEmpty {
+                    cards.append(Card(front: front, back: back))
+                }
+            }
+        }
+        return cards
+    }
+    
+    private func parseExcel(url: URL) throws -> [Card] {
+        let rows = try ExcelParser.parse(url: url)
+        var cards: [Card] = []
+        
+        var startIndex = 0
+        if let firstRow = rows.first,
+           firstRow.count >= 2,
+           firstRow[0].lowercased().contains("front") && firstRow[1].lowercased().contains("back") {
+            startIndex = 1
+        }
+        
+        for i in startIndex..<rows.count {
+            let row = rows[i]
+            if row.count >= 2 {
+                let front = row[0].trimmingCharacters(in: .whitespaces)
+                let back = row[1].trimmingCharacters(in: .whitespaces)
                 if !front.isEmpty && !back.isEmpty {
                     cards.append(Card(front: front, back: back))
                 }
@@ -155,26 +171,13 @@ struct ImportView: View {
         return cards
     }
     
-    private func parseCSVLine(_ line: String) -> [String] {
-        var result: [String] = []
-        var current = ""
-        var inQuotes = false
-        
-        for char in line {
-            if char == "\"" {
-                inQuotes.toggle()
-            } else if char == "," && !inQuotes {
-                result.append(current)
-                current = ""
-            } else {
-                current.append(char)
-            }
-        }
-        result.append(current)
-        return result
+    private func importDeck() {
+        let newDeck = Deck(name: deckName, cards: importedCards)
+        decks.append(newDeck)
+        dismiss()
     }
 }
 
 #Preview {
-    ImportView(decks: .constant([Deck(name: "Test")]))
+    ImportView(decks: .constant([]))
 }
