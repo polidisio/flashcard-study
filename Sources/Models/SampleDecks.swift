@@ -169,7 +169,7 @@ struct SampleDecks {
     }
     
     // MARK: - Química
-    private static var QuimicaCards: [Card] {
+    private static var quimicaCards: [Card] {
         [
             Card(front: "¿Qué es la química?", back: "Ciencia que estudia la composición y transformación de la materia"),
             Card(front: "¿Qué es un elemento químico?", back: "Sustancia pura formada por átomos del mismo tipo"),
