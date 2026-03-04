@@ -76,15 +76,34 @@ final class DeckStore {
     }
     
     private func loadStats() {
-        guard FileManager.default.fileExists(atPath: statsURL.path) else { return }
-        
-        do {
-            let data = try Data(contentsOf: statsURL)
-            let statsData = try decoder.decode(StatsData.self, from: data)
-            cardStats = statsData.cardStats
-            deckStats = statsData.deckStats
-        } catch {
-            print("Error loading stats: \(error)")
+        if FileManager.default.fileExists(atPath: statsURL.path) {
+            do {
+                let data = try Data(contentsOf: statsURL)
+                let statsData = try decoder.decode(StatsData.self, from: data)
+                cardStats = statsData.cardStats
+                deckStats = statsData.deckStats
+            } catch {
+                print("Error loading stats: \(error)")
+                for deck in decks {
+                    if cardStats[deck.id] == nil {
+                        cardStats[deck.id] = [:]
+                    }
+                    if deckStats[deck.id] == nil {
+                        deckStats[deck.id] = DeckStats()
+                    }
+                }
+                save()
+            }
+        } else {
+            for deck in decks {
+                if cardStats[deck.id] == nil {
+                    cardStats[deck.id] = [:]
+                }
+                if deckStats[deck.id] == nil {
+                    deckStats[deck.id] = DeckStats()
+                }
+            }
+            save()
         }
     }
     
