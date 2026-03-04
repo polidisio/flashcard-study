@@ -1,5 +1,6 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import ZIPFoundation
 
 extension UTType {
     static var xlsx: UTType {
@@ -181,38 +182,94 @@ struct ImportView: View {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
         
-        let data = try Data(contentsOf: url)
-        
-        guard let content = String(data: data, encoding: .utf8) else {
-            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot read file. Please export as CSV."])
+        guard let archive = Archive(url: url, accessMode: .read) else {
+            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot read Excel file"])
         }
         
-        var cards: [Card] = []
+        var sharedStrings: [String] = []
         
-        let rowPattern = "<row[^>]*>(.*?)</row>"
-        guard let regex = try? NSRegularExpression(pattern: rowPattern, options: [.dotMatchesLineSeparators]) else {
-            return cards
+        if let sharedStringsEntry = archive["xl/sharedStrings.xml"] {
+            var sharedStringsData = Data()
+            _ = try archive.extract(sharedStringsEntry) { data in
+                sharedStringsData.append(data)
+            }
+            if let content = String(data: sharedStringsData, encoding: .utf8) {
+                sharedStrings = parseSharedStrings(content)
+            }
         }
+        
+        guard let sheetEntry = archive["xl/worksheets/sheet1.xml"] else {
+            throw NSError(domain: "Parse", code: 2, userInfo: [NSLocalizedDescriptionKey: "Cannot find sheet in Excel file"])
+        }
+        
+        var sheetData = Data()
+        _ = try archive.extract(sheetEntry) { data in
+            sheetData.append(data)
+        }
+        
+        guard let content = String(data: sheetData, encoding: .utf8) else {
+            throw NSError(domain: "Parse", code: 3, userInfo: [NSLocalizedDescriptionKey: "Cannot read sheet content"])
+        }
+        
+        let cards = parseSheetXML(content, sharedStrings: sharedStrings)
+        
+        if cards.isEmpty {
+            throw NSError(domain: "Parse", code: 4, userInfo: [NSLocalizedDescriptionKey: "No cards found. Ensure Excel has 'front' and 'back' columns."])
+        }
+        
+        return cards
+    }
+    
+    private func parseSharedStrings(_ content: String) -> [String] {
+        var strings: [String] = []
+        let pattern = "<t>(.*?)</t>"
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else { return strings }
         
         let range = NSRange(content.startIndex..., in: content)
         let matches = regex.matches(in: content, options: [], range: range)
         
-        for (index, match) in matches.enumerated() {
-            guard let rowRange = Range(match.range(at: 1), in: content) else { continue }
+        for match in matches {
+            if let matchRange = Range(match.range(at: 1), in: content) {
+                strings.append(String(content[matchRange]))
+            }
+        }
+        
+        return strings
+    }
+    
+    private func parseSheetXML(_ content: String, sharedStrings: [String]) -> [Card] {
+        var cards: [Card] = []
+        
+        let rowPattern = "<row[^>]*>(.*?)</row>"
+        guard let rowRegex = try? NSRegularExpression(pattern: rowPattern, options: [.dotMatchesLineSeparators]) else {
+            return cards
+        }
+        
+        let range = NSRange(content.startIndex..., in: content)
+        let rowMatches = rowRegex.matches(in: content, options: [], range: range)
+        
+        for (index, rowMatch) in rowMatches.enumerated() {
+            guard let rowRange = Range(rowMatch.range(at: 1), in: content) else { continue }
             let rowContent = String(content[rowRange])
             
             var rowData: [String] = []
             
-            let cellPattern = "<c[^>]*>(<is><t>(.*?)</t></is>|<v>(.*?)</v>)?</c>"
+            let cellPattern = "<c[^>]*>(<is><t>(.*?)</t></is>|(<v>(.*?)</v>))?</c>"
             guard let cellRegex = try? NSRegularExpression(pattern: cellPattern, options: [.dotMatchesLineSeparators]) else { continue }
             let cellRange = NSRange(rowContent.startIndex..., in: rowContent)
             
             let cellMatches = cellRegex.matches(in: rowContent, options: [], range: cellRange)
+            
             for cellMatch in cellMatches {
                 if let tRange = Range(cellMatch.range(at: 2), in: rowContent) {
                     rowData.append(String(rowContent[tRange]))
-                } else if let vRange = Range(cellMatch.range(at: 3), in: rowContent) {
-                    rowData.append(String(rowContent[vRange]))
+                } else if let vRange = Range(cellMatch.range(at: 4), in: rowContent) {
+                    let valueIndex = Int(rowContent[vRange]) ?? 0
+                    if valueIndex < sharedStrings.count {
+                        rowData.append(sharedStrings[valueIndex])
+                    } else {
+                        rowData.append(rowContent[vRange])
+                    }
                 }
             }
             
@@ -227,10 +284,6 @@ struct ImportView: View {
                     cards.append(Card(front: front, back: back))
                 }
             }
-        }
-        
-        if cards.isEmpty {
-            throw NSError(domain: "Parse", code: 2, userInfo: [NSLocalizedDescriptionKey: "No cards found. Try exporting as CSV."])
         }
         
         return cards

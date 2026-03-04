@@ -25,6 +25,7 @@
 		D98D1ABE17B50A44A8A8D188 /* SpacedRepetition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15B2FD1056C73D05A80588B8 /* SpacedRepetition.swift */; };
 		EB6A63A26F198FF884EEC07D /* SpacedRepetitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 068DFD394970B35D2877944E /* SpacedRepetitionTests.swift */; };
 		F09B337FC20EA0FD11140DD4 /* GeographyCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600902A572D87F1BD46ED1AC /* GeographyCards.swift */; };
+		F3ED5E9B37A5C3C8E2E0552E /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = FEE4C94813AA271EEFF0F378 /* ZIPFoundation */; };
 		F576F6442407790774664B5A /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956B4533345831B6F4C24B62 /* Card.swift */; };
 		FAB6E89016A66EE3A92E9004 /* GothicTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */; };
 /* End PBXBuildFile section */
@@ -63,6 +64,17 @@
 		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE0F722E33A8704A2F29871A /* StudyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		008AB1DB6B3BEC20F7B1EBD2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3ED5E9B37A5C3C8E2E0552E /* ZIPFoundation in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		06C0C9B283A8FF2E8D311212 /* Views */ = {
@@ -167,6 +179,7 @@
 			buildConfigurationList = 61D7B91FDD976362AD24CD07 /* Build configuration list for PBXNativeTarget "FlashcardStudy" */;
 			buildPhases = (
 				5AB71BD2F87587ED6516E24A /* Sources */,
+				008AB1DB6B3BEC20F7B1EBD2 /* Frameworks */,
 			);
 			buildRules = (
 			);
@@ -174,6 +187,7 @@
 			);
 			name = FlashcardStudy;
 			packageProductDependencies = (
+				FEE4C94813AA271EEFF0F378 /* ZIPFoundation */,
 			);
 			productName = FlashcardStudy;
 			productReference = FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */;
@@ -204,6 +218,9 @@
 			);
 			mainGroup = B762BBE15FBAB80C16728B50;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				76DFECA4B33D9FCDA04DFD48 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
@@ -494,6 +511,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		76DFECA4B33D9FCDA04DFD48 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		FEE4C94813AA271EEFF0F378 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 76DFECA4B33D9FCDA04DFD48 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 9F280198C20D84087FD0A3C2 /* Project object */;
 }

@@ -12,12 +12,19 @@ settings:
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
 
+packages:
+  ZIPFoundation:
+    url: https://github.com/weichsel/ZIPFoundation
+    from: "0.9.0"
+
 targets:
   FlashcardStudy:
     type: application
     platform: iOS
     sources:
       - path: Sources
+    dependencies:
+      - package: ZIPFoundation
     settings:
       base:
         INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
