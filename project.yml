@@ -49,3 +49,21 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.flashcard.study.tests
+
+schemes:
+  FlashcardStudy:
+    build:
+      targets:
+        FlashcardStudy: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - FlashcardStudyTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
