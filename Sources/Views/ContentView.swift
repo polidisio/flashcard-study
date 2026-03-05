@@ -20,21 +20,44 @@ struct ContentView: View {
         deckStore.decks.reduce(0) { $0 + $1.cards.count }
     }
     
+    private var backgroundView: some View {
+        ZStack {
+            LinearGradient(
+                colors: [
+                    Color(red: 0.98, green: 0.95, blue: 0.90),
+                    Color(red: 0.95, green: 0.91, blue: 0.85),
+                    Color(red: 0.92, green: 0.87, blue: 0.80)
+                ],
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
+            
+            Circle()
+                .fill(Color.orange.opacity(0.10))
+                .frame(width: 400, height: 400)
+                .blur(radius: 80)
+                .offset(x: -100, y: -150)
+            
+            Circle()
+                .fill(Color.blue.opacity(0.08))
+                .frame(width: 350, height: 350)
+                .blur(radius: 70)
+                .offset(x: 150, y: 200)
+            
+            Circle()
+                .fill(Color.cyan.opacity(0.06))
+                .frame(width: 300, height: 300)
+                .blur(radius: 60)
+                .offset(x: -150, y: 300)
+        }
+    }
+    
     var body: some View {
         NavigationStack {
             mainContent
                 .searchable(text: $searchText, prompt: Strings.ContentView.searchDecks)
-                .background(
-                    LinearGradient(
-                        colors: [
-                            Color(red: 0.85, green: 0.92, blue: 0.99),
-                            Color(red: 0.95, green: 0.97, blue: 1.0)
-                        ],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                    .ignoresSafeArea()
-                )
+                .background(backgroundView)
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         VStack(spacing: 0) {
@@ -120,21 +143,30 @@ struct ContentView: View {
             selectedDeckIndex = index
         } label: {
             HStack {
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(deckColor(deck.color))
+                    .frame(width: 6, height: 50)
+                
                 VStack(alignment: .leading, spacing: 4) {
                     Text(deck.name)
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(.primary)
                     Text("\(deck.cards.count) \(Strings.ContentView.cards)")
                         .font(.subheadline)
-                        .foregroundStyle(.white.opacity(0.8))
+                        .foregroundStyle(.secondary)
                 }
                 Spacer()
                 Image(systemName: "chevron.right")
-                    .foregroundStyle(.white.opacity(0.8))
+                    .foregroundStyle(.secondary)
             }
             .padding()
-            .background(deckColor(deck.color))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .overlay(
+                RoundedRectangle(cornerRadius: 16)
+                    .stroke(deckColor(deck.color).opacity(0.3), lineWidth: 1)
+            )
+            .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 4)
         }
         .buttonStyle(.plain)
         .contextMenu {

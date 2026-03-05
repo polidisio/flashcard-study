@@ -31,35 +31,13 @@ final class DeckStore {
     }
     
     func load() {
-        if !FileManager.default.fileExists(atPath: fileURL.path) {
-            decks = SampleDecks.createAllDecks()
-            for deck in decks {
-                cardStats[deck.id] = [:]
-                deckStats[deck.id] = DeckStats()
-            }
-            save()
-            loadProgress()
-            loadStats()
-            return
-        }
-        
-        do {
-            let data = try Data(contentsOf: fileURL)
-            decks = try decoder.decode([Deck].self, from: data)
-        } catch {
-            print("Error loading decks: \(error)")
-            decks = SampleDecks.createAllDecks()
-        }
-        
+        // Always load sample decks for testing
+        decks = SampleDecks.createAllDecks()
         for deck in decks {
-            if cardStats[deck.id] == nil {
-                cardStats[deck.id] = [:]
-            }
-            if deckStats[deck.id] == nil {
-                deckStats[deck.id] = DeckStats()
-            }
+            cardStats[deck.id] = [:]
+            deckStats[deck.id] = DeckStats()
         }
-        
+        save()
         loadProgress()
         loadStats()
     }
