@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 63;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,6 +18,8 @@
 		424E79981EE3B74067F4A219 /* MediaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05409CD6F2A65EFEE9A8BBC /* MediaManager.swift */; };
 		557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562CC8695A8B6F97E986EE65 /* CardProgress.swift */; };
 		65862D7792026CB60687F5D4 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6A895D3054D8EA7538A5E9 /* CardTests.swift */; };
+		6BD01C18438E32D54E3C92E0 /* CloudManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AEBC67F8572651E1674F4 /* CloudManager.swift */; };
+		726780AB8E5BEF4C68791461 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F935CFB70EFFEEBA8A1ADD4C /* Assets.xcassets */; };
 		76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9C587F4C731424208736D /* SampleDecks.swift */; };
 		89059A35D2A349FCE0BB9ED5 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96DC8D9F769B1C624951E28B /* StatsView.swift */; };
 		8AC455C3C11A5DAAD0614412 /* LanguageCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C3F12EA115B285E1B5517DC /* LanguageCards.swift */; };
@@ -59,7 +61,8 @@
 		562CC8695A8B6F97E986EE65 /* CardProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardProgress.swift; sourceTree = "<group>"; };
 		600902A572D87F1BD46ED1AC /* GeographyCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeographyCards.swift; sourceTree = "<group>"; };
 		639254D10131FB38338B5787 /* HistoryCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCards.swift; sourceTree = "<group>"; };
-		63DD29B0DAA4B1BEF555C5C4 /* FlashcardStudyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlashcardStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63DD29B0DAA4B1BEF555C5C4 /* FlashcardStudyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FlashcardStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		663AEBC67F8572651E1674F4 /* CloudManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudManager.swift; sourceTree = "<group>"; };
 		6C6A895D3054D8EA7538A5E9 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
 		6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GothicTheme.swift; sourceTree = "<group>"; };
 		70C85564049E538C62ADD394 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
@@ -71,7 +74,8 @@
 		D1941D42154A9A657F111CD1 /* CardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStats.swift; sourceTree = "<group>"; };
 		E1674F93DF2E15E7556C4BA0 /* CardStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStatsTests.swift; sourceTree = "<group>"; };
 		E91A046D38F3C4B564062A49 /* AddDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDeckView.swift; sourceTree = "<group>"; };
-		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F935CFB70EFFEEBA8A1ADD4C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE0F722E33A8704A2F29871A /* StudyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,6 +111,7 @@
 				956B4533345831B6F4C24B62 /* Card.swift */,
 				562CC8695A8B6F97E986EE65 /* CardProgress.swift */,
 				D1941D42154A9A657F111CD1 /* CardStats.swift */,
+				663AEBC67F8572651E1674F4 /* CloudManager.swift */,
 				70C85564049E538C62ADD394 /* Deck.swift */,
 				514B72D30F003BACBE3BF467 /* DeckStore.swift */,
 				600902A572D87F1BD46ED1AC /* GeographyCards.swift */,
@@ -140,6 +145,7 @@
 		85CC1CFCC78A55000DF9B9D2 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				F935CFB70EFFEEBA8A1ADD4C /* Assets.xcassets */,
 				16C50044278F81F4E932ED76 /* App */,
 				129BB5E1012DB59D3ED99701 /* Models */,
 				06C0C9B283A8FF2E8D311212 /* Views */,
@@ -194,6 +200,7 @@
 			buildConfigurationList = 61D7B91FDD976362AD24CD07 /* Build configuration list for PBXNativeTarget "FlashcardStudy" */;
 			buildPhases = (
 				5AB71BD2F87587ED6516E24A /* Sources */,
+				0A35C34A05C462798ED17C09 /* Resources */,
 				008AB1DB6B3BEC20F7B1EBD2 /* Frameworks */,
 			);
 			buildRules = (
@@ -218,6 +225,7 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					E918EA2DAF5609D617D0ED04 = {
+						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -235,6 +243,7 @@
 			packageReferences = (
 				76DFECA4B33D9FCDA04DFD48 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -243,6 +252,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0A35C34A05C462798ED17C09 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				726780AB8E5BEF4C68791461 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		5AB71BD2F87587ED6516E24A /* Sources */ = {
@@ -253,6 +273,7 @@
 				F576F6442407790774664B5A /* Card.swift in Sources */,
 				557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */,
 				0BD51DCCF7C10077BCF5E504 /* CardStats.swift in Sources */,
+				6BD01C18438E32D54E3C92E0 /* CloudManager.swift in Sources */,
 				120A78A9DE0714879B3164B1 /* ContentView.swift in Sources */,
 				31A0D72210948D4836705072 /* Deck.swift in Sources */,
 				A5FE5EC302875EB2CA0B13D4 /* DeckStore.swift in Sources */,
@@ -302,7 +323,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = DQ7D6387N8;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -322,7 +343,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = DQ7D6387N8;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -401,7 +421,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = DQ7D6387N8;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -421,7 +441,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				DEVELOPMENT_TEAM = DQ7D6387N8;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
