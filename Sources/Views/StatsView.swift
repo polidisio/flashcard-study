@@ -38,7 +38,11 @@ struct StatsView: View {
                 }
                 .padding()
             }
-            .background(Color.adaptiveGlassBackground)
+            .background(LinearGradient(
+                colors: [Color(red: 0.89, green: 0.95, blue: 1.0), Color(red: 0.73, green: 0.87, blue: 0.98)],
+                startPoint: .top,
+                endPoint: .bottom
+            ))
             .navigationTitle("Statistics")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

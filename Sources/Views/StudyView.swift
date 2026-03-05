@@ -89,7 +89,11 @@ struct StudyView: View {
             .tint(.blue)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.adaptiveGlassBackground)
+        .background(LinearGradient(
+            colors: [Color(red: 0.89, green: 0.95, blue: 1.0), Color(red: 0.73, green: 0.87, blue: 0.98)],
+            startPoint: .top,
+            endPoint: .bottom
+        ))
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -177,7 +181,11 @@ struct StudyView: View {
         .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.adaptiveGlassBackground)
+        .background(LinearGradient(
+            colors: [Color(red: 0.89, green: 0.95, blue: 1.0), Color(red: 0.73, green: 0.87, blue: 0.98)],
+            startPoint: .top,
+            endPoint: .bottom
+        ))
         .navigationTitle(deck.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

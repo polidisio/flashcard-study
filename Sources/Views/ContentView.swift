@@ -13,9 +13,7 @@ struct ContentView: View {
         NavigationStack {
             ZStack {
                 LinearGradient(
-                    colors: colorScheme == .dark 
-                        ? [Color(uiColor: .systemBackground), Color.blue.opacity(0.15)] 
-                        : [Color(uiColor: .systemBackground), Color.blue.opacity(0.05)],
+                    colors: [Color(red: 0.89, green: 0.95, blue: 1.0), Color(red: 0.73, green: 0.87, blue: 0.98)],
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -117,9 +115,9 @@ struct DeckCardView: View {
                     .foregroundStyle(.secondary)
             }
             .padding()
-            .background(.ultraThinMaterial)
+            .background(Color.white)
             .clipShape(RoundedRectangle(cornerRadius: 16))
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+            .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
         }
         .buttonStyle(.plain)
         .contextMenu {
@@ -161,7 +159,7 @@ struct EditDeckNameView: View {
                 }
             }
         }
-        .presentationBackground(.ultraThinMaterial)
+        .presentationBackground(Color.white)
     }
 }
 

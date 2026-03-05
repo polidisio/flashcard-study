@@ -7,6 +7,8 @@ struct FlashcardStudyApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(deckStore: deckStore)
+                .tint(.blue)
+                .preferredColorScheme(.light)
         }
     }
 }
