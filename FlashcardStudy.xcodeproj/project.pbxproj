@@ -35,7 +35,6 @@
 		F09B337FC20EA0FD11140DD4 /* GeographyCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 600902A572D87F1BD46ED1AC /* GeographyCards.swift */; };
 		F3ED5E9B37A5C3C8E2E0552E /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = FEE4C94813AA271EEFF0F378 /* ZIPFoundation */; };
 		F576F6442407790774664B5A /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 956B4533345831B6F4C24B62 /* Card.swift */; };
-		FAB6E89016A66EE3A92E9004 /* GothicTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,7 +64,6 @@
 		63DD29B0DAA4B1BEF555C5C4 /* FlashcardStudyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FlashcardStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		663AEBC67F8572651E1674F4 /* CloudManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudManager.swift; sourceTree = "<group>"; };
 		6C6A895D3054D8EA7538A5E9 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
-		6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GothicTheme.swift; sourceTree = "<group>"; };
 		70C85564049E538C62ADD394 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		8D0B197BF2327383B692CA89 /* GlassTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassTheme.swift; sourceTree = "<group>"; };
 		918D4B107E2F86A4FEC2FB51 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -100,7 +98,6 @@
 				918D4B107E2F86A4FEC2FB51 /* ContentView.swift */,
 				292683B3D8490361C2A52174 /* ExcelParser.swift */,
 				8D0B197BF2327383B692CA89 /* GlassTheme.swift */,
-				6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */,
 				560E47B27877FFB89E86E386 /* ImportView.swift */,
 				96DC8D9F769B1C624951E28B /* StatsView.swift */,
 				FE0F722E33A8704A2F29871A /* StudyView.swift */,
@@ -284,7 +281,6 @@
 				BE9391710C2222EBA3116209 /* FlashcardStudyApp.swift in Sources */,
 				F09B337FC20EA0FD11140DD4 /* GeographyCards.swift in Sources */,
 				01F911D6A3FFD2CE334704FE /* GlassTheme.swift in Sources */,
-				FAB6E89016A66EE3A92E9004 /* GothicTheme.swift in Sources */,
 				3E70F7C7B919094BD9C1CF48 /* HistoryCards.swift in Sources */,
 				C18B612EFFA74527F1F1910A /* ImportView.swift in Sources */,
 				8AC455C3C11A5DAAD0614412 /* LanguageCards.swift in Sources */,
