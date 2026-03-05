@@ -14,8 +14,8 @@ struct ContentView: View {
             ZStack {
                 LinearGradient(
                     colors: colorScheme == .dark 
-                        ? [Color(white: 0.08), Color.blue.opacity(0.1)] 
-                        : [Color.white, Color.blue.opacity(0.05)],
+                        ? [Color(uiColor: .systemBackground), Color.blue.opacity(0.15)] 
+                        : [Color(uiColor: .systemBackground), Color.blue.opacity(0.05)],
                     startPoint: .top,
                     endPoint: .bottom
                 )
@@ -107,7 +107,7 @@ struct DeckCardView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(deck.name)
                         .font(.headline)
-                        .foregroundStyle(colorScheme == .dark ? .white : .black)
+                        .foregroundStyle(.primary)
                     Text("\(deck.cards.count) cards")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
