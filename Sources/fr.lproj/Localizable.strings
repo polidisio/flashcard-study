@@ -1,0 +1,66 @@
+/* ContentView */
+"Search decks" = "Rechercher des paquets";
+"My Decks" = "Mes paquets";
+"decks • cards" = "paquets • cartes";
+"cards" = "cartes";
+"Rename" = "Renommer";
+"Delete" = "Supprimer";
+
+/* AddDeck */
+"Deck Name" = "Nom du paquet";
+"Enter deck name" = "Entrez le nom du paquet";
+"Color" = "Couleur";
+"New Deck" = "Nouveau paquet";
+"Cancel" = "Annuler";
+"Save" = "Enregistrer";
+
+/* StudyView */
+"All Cards" = "Toutes les cartes";
+"Due Today" = "À réviser aujourd'hui";
+"Study Mode" = "Mode étude";
+"No Cards in Deck" = "Aucune carte dans le paquet";
+"Add First Card" = "Ajouter une première carte";
+"Done" = "Terminé";
+"Card %d of %d" = "Carte %d sur %d";
+"Edit Card" = "Modifier la carte";
+"Delete Card" = "Supprimer la carte";
+"Tap card to reveal answer" = "Appuyez sur la carte pour révéler la réponse";
+"Add Card" = "Ajouter une carte";
+"Edit" = "Modifier";
+"Statistics" = "Statistiques";
+"Level" = "Niveau";
+"Precision" = "Précision";
+"Studied" = "Étudiées";
+"Correct" = "Correct";
+"Incorrect" = "Incorrect";
+"Front (Question)" = "Recto (Question)";
+"Back (Answer)" = "Verso (Réponse)";
+"Enter question" = "Entrez la question";
+"Enter answer" = "Entrez la réponse";
+"Add" = "Ajouter";
+"Play Audio" = "Jouer l'audio";
+"Playing..." = "Lecture en cours...";
+
+/* StatsView */
+"Summary" = "Résumé";
+"Total Cards" = "Total des cartes";
+"Mastered" = "Maîtrisées";
+"Due for Review" = "À réviser";
+"Average Precision" = "Précision moyenne";
+"Current Streak" = "Série actuelle";
+"Longest Streak" = "Plus longue série";
+"Best Precision" = "Meilleure précision";
+"Reset Statistics" = "Réinitialiser les statistiques";
+"Are you sure you want to reset all statistics for this deck? This action cannot be undone." = "Êtes-vous sûr de vouloir réinitialiser toutes les ce paquet ? Cette action est irré statistiques deversible.";
+"Card Statistics" = "Statistiques des cartes";
+"days" = "jours";
+
+/* ImportView */
+"Import Decks" = "Importer des paquets";
+"Select File" = "Sélectionner un fichier";
+"Importing..." = "Importation en cours...";
+"Import Successful" = "Importation réussie";
+"Decks imported successfully." = "Paquets importés avec succès.";
+"Import Error" = "Erreur d'importation";
+"Invalid file format. Please select a valid file." = "Format de fichier invalide. Veuillez sélectionner un fichier valide.";
+"OK" = "OK";

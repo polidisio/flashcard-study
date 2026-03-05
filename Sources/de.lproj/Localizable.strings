@@ -1,0 +1,66 @@
+/* ContentView */
+"Search decks" = "Stapel suchen";
+"My Decks" = "Meine Stapel";
+"decks • cards" = "Stapel • Karten";
+"cards" = "Karten";
+"Rename" = "Umbenennen";
+"Delete" = "Löschen";
+
+/* AddDeck */
+"Deck Name" = "Stapelname";
+"Enter deck name" = "Stapelnamen eingeben";
+"Color" = "Farbe";
+"New Deck" = "Neuer Stapel";
+"Cancel" = "Abbrechen";
+"Save" = "Speichern";
+
+/* StudyView */
+"All Cards" = "Alle Karten";
+"Due Today" = "Heute fällig";
+"Study Mode" = "Lernmodus";
+"No Cards in Deck" = "Keine Karten im Stapel";
+"Add First Card" = "Erste Karte hinzufügen";
+"Done" = "Fertig";
+"Card %d of %d" = "Karte %d von %d";
+"Edit Card" = "Karte bearbeiten";
+"Delete Card" = "Karte löschen";
+"Tap card to reveal answer" = "Tippen Sie auf die Karte, um die Antwort anzuzeigen";
+"Add Card" = "Karte hinzufügen";
+"Edit" = "Bearbeiten";
+"Statistics" = "Statistiken";
+"Level" = "Stufe";
+"Precision" = "Genauigkeit";
+"Studied" = "Gelernt";
+"Correct" = "Richtig";
+"Incorrect" = "Falsch";
+"Front (Question)" = "Vorderseite (Frage)";
+"Back (Answer)" = "Rückseite (Antwort)";
+"Enter question" = "Frage eingeben";
+"Enter answer" = "Antwort eingeben";
+"Add" = "Hinzufügen";
+"Play Audio" = "Audio abspielen";
+"Playing..." = "Wird abgespielt...";
+
+/* StatsView */
+"Summary" = "Zusammenfassung";
+"Total Cards" = "Gesamtzahl der Karten";
+"Mastered" = "Gemeistert";
+"Due for Review" = "Zur Wiederholung fällig";
+"Average Precision" = "Durchschnittliche Genauigkeit";
+"Current Streak" = "Aktuelle Serie";
+"Longest Streak" = "Längste Serie";
+"Best Precision" = "Beste Genauigkeit";
+"Reset Statistics" = "Statistiken zurücksetzen";
+"Are you sure you want to reset all statistics for this deck? This action cannot be undone." = "Möchten Sie wirklich alle Statistiken für diesen Stapel zurücksetzen? Diese Aktion kann nicht rückgängig gemacht werden.";
+"Card Statistics" = "Kartenstatistiken";
+"days" = "Tage";
+
+/* ImportView */
+"Import Decks" = "Stapel importieren";
+"Select File" = "Datei auswählen";
+"Importing..." = "Importieren...";
+"Import Successful" = "Import erfolgreich";
+"Decks imported successfully." = "Stapel erfolgreich importiert.";
+"Import Error" = "Importfehler";
+"Invalid file format. Please select a valid file." = "Ungültiges Dateiformat. Bitte wählen Sie eine gültige Datei.";
+"OK" = "OK";

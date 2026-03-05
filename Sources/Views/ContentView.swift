@@ -68,7 +68,7 @@ struct ContentView: View {
                                     .font(.headline)
                                     .fontWeight(.bold)
                             }
-                            Text("\(deckStore.decks.count) \(Strings.ContentView.decksCards)")
+                            Text("\(deckStore.decks.count) \(Strings.ContentView.decksCards) • \(totalCards) \(Strings.ContentView.cards)")
                                 .font(.caption2)
                                 .foregroundStyle(.secondary)
                         }
