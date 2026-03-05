@@ -24,9 +24,9 @@ struct ContentView: View {
         ZStack {
             LinearGradient(
                 colors: [
-                    Color(red: 0.97, green: 0.95, blue: 0.99),
-                    Color(red: 0.95, green: 0.93, blue: 0.98),
-                    Color(red: 0.93, green: 0.90, blue: 0.96)
+                    Color(red: 0.85, green: 0.90, blue: 0.98),
+                    Color(red: 0.80, green: 0.86, blue: 0.96),
+                    Color(red: 0.75, green: 0.82, blue: 0.94)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
@@ -34,19 +34,19 @@ struct ContentView: View {
             .ignoresSafeArea()
             
             Circle()
-                .fill(Color.purple.opacity(0.08))
+                .fill(Color.blue.opacity(0.15))
                 .frame(width: 400, height: 400)
                 .blur(radius: 80)
                 .offset(x: -100, y: -150)
             
             Circle()
-                .fill(Color.blue.opacity(0.06))
+                .fill(Color.indigo.opacity(0.12))
                 .frame(width: 350, height: 350)
                 .blur(radius: 70)
                 .offset(x: 150, y: 200)
             
             Circle()
-                .fill(Color.cyan.opacity(0.04))
+                .fill(Color.cyan.opacity(0.08))
                 .frame(width: 300, height: 300)
                 .blur(radius: 60)
                 .offset(x: -150, y: 300)
