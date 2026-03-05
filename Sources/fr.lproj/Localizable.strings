@@ -1,6 +1,7 @@
 /* ContentView */
 "Search decks" = "Rechercher des paquets";
 "My Decks" = "Mes paquets";
+"decks" = "paquets";
 "decks • cards" = "paquets • cartes";
 "cards" = "cartes";
 "Rename" = "Renommer";

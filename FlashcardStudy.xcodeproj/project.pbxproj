@@ -19,7 +19,6 @@
 		424E79981EE3B74067F4A219 /* MediaManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05409CD6F2A65EFEE9A8BBC /* MediaManager.swift */; };
 		557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562CC8695A8B6F97E986EE65 /* CardProgress.swift */; };
 		65862D7792026CB60687F5D4 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6A895D3054D8EA7538A5E9 /* CardTests.swift */; };
-		6BD01C18438E32D54E3C92E0 /* CloudManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AEBC67F8572651E1674F4 /* CloudManager.swift */; };
 		6C2F452A28072A5E470EE3B7 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9B3F569718AF73D0BC0AE668 /* Localizable.strings */; };
 		726780AB8E5BEF4C68791461 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F935CFB70EFFEEBA8A1ADD4C /* Assets.xcassets */; };
 		76E23A0FAF036E040DDF0CDB /* SampleDecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CE9C587F4C731424208736D /* SampleDecks.swift */; };
@@ -57,17 +56,18 @@
 		292683B3D8490361C2A52174 /* ExcelParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExcelParser.swift; sourceTree = "<group>"; };
 		2C3F12EA115B285E1B5517DC /* LanguageCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageCards.swift; sourceTree = "<group>"; };
 		3805220432037BCE9DF96B9D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
+		40121E38923C07FD87BBB59F /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4CE9C587F4C731424208736D /* SampleDecks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleDecks.swift; sourceTree = "<group>"; };
 		504942073EB9CE75E326BAD0 /* ScienceCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScienceCards.swift; sourceTree = "<group>"; };
 		5132DFD1E68CF0B4C07CD2B2 /* CSVParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVParserTests.swift; sourceTree = "<group>"; };
 		514B72D30F003BACBE3BF467 /* DeckStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeckStore.swift; sourceTree = "<group>"; };
 		560E47B27877FFB89E86E386 /* ImportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportView.swift; sourceTree = "<group>"; };
 		562CC8695A8B6F97E986EE65 /* CardProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardProgress.swift; sourceTree = "<group>"; };
+		5EC85DD8B7A5F438B436F1F4 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		600902A572D87F1BD46ED1AC /* GeographyCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeographyCards.swift; sourceTree = "<group>"; };
 		639254D10131FB38338B5787 /* HistoryCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCards.swift; sourceTree = "<group>"; };
 		63BE933FE5C189B055C25CEE /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		63DD29B0DAA4B1BEF555C5C4 /* FlashcardStudyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FlashcardStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		663AEBC67F8572651E1674F4 /* CloudManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudManager.swift; sourceTree = "<group>"; };
 		6C6A895D3054D8EA7538A5E9 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
 		70C85564049E538C62ADD394 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		8D0B197BF2327383B692CA89 /* GlassTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassTheme.swift; sourceTree = "<group>"; };
@@ -120,7 +120,6 @@
 				956B4533345831B6F4C24B62 /* Card.swift */,
 				562CC8695A8B6F97E986EE65 /* CardProgress.swift */,
 				D1941D42154A9A657F111CD1 /* CardStats.swift */,
-				663AEBC67F8572651E1674F4 /* CloudManager.swift */,
 				70C85564049E538C62ADD394 /* Deck.swift */,
 				514B72D30F003BACBE3BF467 /* DeckStore.swift */,
 				600902A572D87F1BD46ED1AC /* GeographyCards.swift */,
@@ -246,8 +245,10 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				de,
 				en,
 				es,
+				fr,
 			);
 			mainGroup = B762BBE15FBAB80C16728B50;
 			minimizedProjectReferenceProxies = 1;
@@ -285,7 +286,6 @@
 				F576F6442407790774664B5A /* Card.swift in Sources */,
 				557C9C5AA9691A7E9D688527 /* CardProgress.swift in Sources */,
 				0BD51DCCF7C10077BCF5E504 /* CardStats.swift in Sources */,
-				6BD01C18438E32D54E3C92E0 /* CloudManager.swift in Sources */,
 				8DBB7038DC91E28AAA85E5DA /* ColorExtensions.swift in Sources */,
 				120A78A9DE0714879B3164B1 /* ContentView.swift in Sources */,
 				31A0D72210948D4836705072 /* Deck.swift in Sources */,
@@ -333,8 +333,10 @@
 		9B3F569718AF73D0BC0AE668 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
+				5EC85DD8B7A5F438B436F1F4 /* de */,
 				BEE5C34F6242D46CE6CF1E22 /* en */,
 				3805220432037BCE9DF96B9D /* es */,
+				40121E38923C07FD87BBB59F /* fr */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -349,7 +351,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Flashcard Study";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -447,7 +454,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Flashcard Study";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

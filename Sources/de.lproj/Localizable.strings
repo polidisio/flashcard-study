@@ -1,6 +1,7 @@
 /* ContentView */
 "Search decks" = "Stapel suchen";
 "My Decks" = "Meine Stapel";
+"decks" = "Stapel";
 "decks • cards" = "Stapel • Karten";
 "cards" = "Karten";
 "Rename" = "Umbenennen";

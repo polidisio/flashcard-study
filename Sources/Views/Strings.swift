@@ -8,6 +8,7 @@ enum Strings {
     enum ContentView {
         static var searchDecks: String { localized("Search decks") }
         static var myDecks: String { localized("My Decks") }
+        static var decks: String { localized("decks") }
         static var decksCards: String { localized("decks • cards") }
         static var cards: String { localized("cards") }
         static var rename: String { localized("Rename") }

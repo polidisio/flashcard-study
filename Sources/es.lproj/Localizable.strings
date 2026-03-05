@@ -1,6 +1,7 @@
 /* ContentView */
 "Search decks" = "Buscar mazos";
 "My Decks" = "Mis Mazos";
+"decks" = "mazos";
 "decks • cards" = "mazos • tarjetas";
 "cards" = "tarjetas";
 "Rename" = "Renombrar";
