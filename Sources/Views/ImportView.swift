@@ -198,9 +198,7 @@ struct ImportView: View {
         let accessing = url.startAccessingSecurityScopedResource()
         defer { if accessing { url.stopAccessingSecurityScopedResource() } }
         
-        guard let archive = Archive(url: url, accessMode: .read) else {
-            throw NSError(domain: "Parse", code: 1, userInfo: [NSLocalizedDescriptionKey: "Cannot read Excel file"])
-        }
+        let archive = try Archive(url: url, accessMode: .read)
         
         var sharedStrings: [String] = []
         

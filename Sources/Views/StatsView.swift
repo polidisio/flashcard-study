@@ -8,17 +8,17 @@ struct StatsView: View {
     @State private var refreshKey = 0
     
     private var deckStats: DeckStats {
-        refreshKey
+        _ = refreshKey
         return deckStore.getDeckStats(for: deck.id)
     }
     
     private var cardStats: [UUID: CardStats] {
-        refreshKey
+        _ = refreshKey
         return deckStore.getAllCardStats(for: deck.id)
     }
     
     private var sortedCards: [Card] {
-        refreshKey
+        _ = refreshKey
         return deck.cards.sorted { card1, card2 in
             let stats1 = cardStats[card1.id] ?? CardStats()
             let stats2 = cardStats[card2.id] ?? CardStats()

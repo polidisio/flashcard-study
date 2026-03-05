@@ -126,7 +126,7 @@ class CloudManager: ObservableObject {
     
     func uploadDeck(_ deck: Deck) async throws {
         let cloudDeck = CloudDeck(from: deck)
-        let record = try await saveDeckToCloud(cloudDeck)
+        _ = try await saveDeckToCloud(cloudDeck)
         
         // Upload media if exists
         for card in deck.cards {
@@ -226,9 +226,6 @@ class CloudManager: ObservableObject {
     // MARK: - Media
     
     func uploadCardMedia(card: Card) async throws {
-        let mediaDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("media")
-        
         // Upload front image
         if let imagePath = card.imageFront {
             try await uploadFile(at: imagePath, cardId: card.id, type: "imageFront")
