@@ -41,6 +41,8 @@ targets:
         CODE_SIGN_STYLE: Automatic
         PRODUCT_BUNDLE_IDENTIFIER: com.flashcard.study
         TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_HARDENED_RUNTIME: YES
+        DEBUG_INFORMATION_FORMAT: "dwarf-with-dsym"
 
   FlashcardStudyTests:
     type: bundle.unit-test
