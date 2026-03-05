@@ -115,7 +115,7 @@ struct DeckCardView: View {
                     .foregroundStyle(.secondary)
             }
             .padding()
-            .background(Color.white)
+            .background(Color(red: 0.85, green: 0.92, blue: 1.0))
             .clipShape(RoundedRectangle(cornerRadius: 16))
             .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
         }

@@ -28,6 +28,6 @@ struct AddDeckView: View {
                 }
             }
         }
-        .presentationBackground(Color.white)
+        .presentationBackground(Color(red: 0.9, green: 0.95, blue: 1.0))
     }
 }

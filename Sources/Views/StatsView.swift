@@ -127,7 +127,7 @@ struct StatsView: View {
                 Spacer()
             }
             .padding()
-            .background(.ultraThinMaterial)
+            .background(Color(red: 0.9, green: 0.95, blue: 1.0))
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -208,7 +208,7 @@ struct CardStatsRow: View {
             }
         }
         .padding()
-        .background(.ultraThinMaterial)
+        .background(Color(red: 0.9, green: 0.95, blue: 1.0))
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
     

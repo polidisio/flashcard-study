@@ -532,10 +532,14 @@ struct CardFace: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(.ultraThinMaterial)
+                .fill(Color(red: 0.85, green: 0.92, blue: 1.0))
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(.blue.opacity(0.3), lineWidth: 1)
+                        .fill(.ultraThinMaterial)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 20)
+                        .stroke(.blue.opacity(0.5), lineWidth: 2)
                 )
             
             VStack(spacing: 16) {
