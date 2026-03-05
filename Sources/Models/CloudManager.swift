@@ -34,7 +34,7 @@ struct CloudDeck: Codable {
         self.id = deck.id
         self.name = deck.name
         self.cards = deck.cards.map { CloudCard(from: $0) }
-        self.lastModified = deck.lastModified ?? Date()
+        self.lastModified = deck.lastModified
     }
     
     func toDeck() -> Deck {
@@ -168,10 +168,10 @@ class CloudManager: ObservableObject {
         for localDeck in local {
             if let remoteDeck = remote.first(where: { $0.id == localDeck.id }) {
                 // Deck exists in both - check for conflicts
-                if localDeck.lastModified ?? Date.distantPast > remoteDeck.lastModified ?? Date.distantPast {
+                if localDeck.lastModified > remoteDeck.lastModified {
                     // Local is newer - use local
                     merged.append(localDeck)
-                } else if localDeck.lastModified ?? Date.distantPast < remoteDeck.lastModified ?? Date.distantPast {
+                } else if localDeck.lastModified < remoteDeck.lastModified {
                     // Remote is newer - use remote
                     merged.append(remoteDeck)
                 } else {
@@ -306,10 +306,8 @@ class CloudManager: ObservableObject {
     }
     
     func detectConflict(local: Deck, remote: Deck) -> Bool {
-        guard let localDate = local.lastModified,
-              let remoteDate = remote.lastModified else {
-            return false
-        }
+        let localDate = local.lastModified
+        let remoteDate = remote.lastModified
         
         // Consider it a conflict if both have been modified within 1 minute
         return abs(localDate.timeIntervalSince(remoteDate)) < 60
