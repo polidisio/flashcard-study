@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -59,7 +59,7 @@
 		562CC8695A8B6F97E986EE65 /* CardProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardProgress.swift; sourceTree = "<group>"; };
 		600902A572D87F1BD46ED1AC /* GeographyCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeographyCards.swift; sourceTree = "<group>"; };
 		639254D10131FB38338B5787 /* HistoryCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryCards.swift; sourceTree = "<group>"; };
-		63DD29B0DAA4B1BEF555C5C4 /* FlashcardStudyTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = FlashcardStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		63DD29B0DAA4B1BEF555C5C4 /* FlashcardStudyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlashcardStudyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C6A895D3054D8EA7538A5E9 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
 		6F62A2F8E106F109EAB8BAEC /* GothicTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GothicTheme.swift; sourceTree = "<group>"; };
 		70C85564049E538C62ADD394 /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
@@ -71,7 +71,7 @@
 		D1941D42154A9A657F111CD1 /* CardStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStats.swift; sourceTree = "<group>"; };
 		E1674F93DF2E15E7556C4BA0 /* CardStatsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStatsTests.swift; sourceTree = "<group>"; };
 		E91A046D38F3C4B564062A49 /* AddDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddDeckView.swift; sourceTree = "<group>"; };
-		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FD23DB49C8D5244D47F6DCE6 /* FlashcardStudy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlashcardStudy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FE0F722E33A8704A2F29871A /* StudyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -218,7 +218,6 @@
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
 					E918EA2DAF5609D617D0ED04 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -236,7 +235,6 @@
 			packageReferences = (
 				76DFECA4B33D9FCDA04DFD48 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
-			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -304,7 +302,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = DQ7D6387N8;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -324,6 +322,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = DQ7D6387N8;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -402,7 +401,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = DQ7D6387N8;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -422,6 +421,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = DQ7D6387N8;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
