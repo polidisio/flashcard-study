@@ -45,6 +45,10 @@ struct StudyView: View {
         return studyCards[currentIndex]
     }
     
+    private var deckColorValue: Color {
+        deckColor(deck.color)
+    }
+    
     var body: some View {
         NavigationStack {
             if cards.isEmpty {
@@ -79,21 +83,17 @@ struct StudyView: View {
         VStack(spacing: 16) {
             Image(systemName: "rectangle.on.rectangle.slash")
                 .font(.system(size: 60))
-                .foregroundStyle(.blue)
+                .foregroundStyle(deckColorValue)
             Text("No Cards in Deck")
                 .font(.title2)
             Button("Add First Card") {
                 showingAddCard = true
             }
             .buttonStyle(.borderedProminent)
-            .tint(.blue)
+            .tint(deckColorValue)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(LinearGradient(
-            colors: [Color(red: 0.89, green: 0.95, blue: 1.0), Color(red: 0.73, green: 0.87, blue: 0.98)],
-            startPoint: .top,
-            endPoint: .bottom
-        ))
+        .background(Color(.systemGroupedBackground))
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -123,7 +123,8 @@ struct StudyView: View {
                 CardFlipView(
                     card: card,
                     isFlipped: $isFlipped,
-                    rotation: $rotation
+                    rotation: $rotation,
+                    accentColor: deckColorValue
                 )
                 .onTapGesture {
                     withAnimation(.easeInOut(duration: 0.5)) {
@@ -181,11 +182,7 @@ struct StudyView: View {
         .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(LinearGradient(
-            colors: [Color(red: 0.89, green: 0.95, blue: 1.0), Color(red: 0.73, green: 0.87, blue: 0.98)],
-            startPoint: .top,
-            endPoint: .bottom
-        ))
+        .background(Color(.systemGroupedBackground))
         .navigationTitle(deck.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -238,7 +235,7 @@ struct StudyView: View {
         case 0...3: return .red
         case 4...6: return .orange
         case 7...9: return .green
-        default: return .blue
+        default: return deckColorValue
         }
     }
     
@@ -334,14 +331,14 @@ struct StudyView: View {
                     .font(.system(size: 50))
             }
             .disabled(currentIndex == 0)
-            .foregroundStyle(currentIndex == 0 ? Color.gray : .blue)
+            .foregroundStyle(currentIndex == 0 ? Color.gray : deckColorValue)
             
             Button { nextCard() } label: {
                 Image(systemName: "chevron.right.circle.fill")
                     .font(.system(size: 50))
             }
             .disabled(currentIndex >= studyCards.count - 1)
-            .foregroundStyle(currentIndex >= studyCards.count - 1 ? Color.gray : .blue)
+            .foregroundStyle(currentIndex >= studyCards.count - 1 ? Color.gray : deckColorValue)
         }
     }
     
@@ -497,6 +494,7 @@ struct CardFlipView: View {
     let card: Card
     @Binding var isFlipped: Bool
     @Binding var rotation: Double
+    var accentColor: Color = .blue
     @StateObject private var mediaManager = MediaManager.shared
     
     var body: some View {
@@ -505,7 +503,8 @@ struct CardFlipView: View {
                 text: card.front,
                 imagePath: card.imageFront,
                 audioPath: card.audioFront,
-                isBack: false
+                isBack: false,
+                accentColor: accentColor
             )
             .opacity(isFlipped ? 0 : 1)
             .rotation3DEffect(.degrees(rotation), axis: (x: 0, y: 1, z: 0))
@@ -514,7 +513,8 @@ struct CardFlipView: View {
                 text: card.back,
                 imagePath: card.imageBack,
                 audioPath: card.audioBack,
-                isBack: true
+                isBack: true,
+                accentColor: accentColor
             )
             .opacity(isFlipped ? 1 : 0)
             .rotation3DEffect(.degrees(rotation + 180), axis: (x: 0, y: 1, z: 0))
@@ -527,19 +527,20 @@ struct CardFace: View {
     let imagePath: String?
     let audioPath: String?
     let isBack: Bool
+    var accentColor: Color = .blue
     @StateObject private var mediaManager = MediaManager.shared
     
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(Color(red: 0.85, green: 0.92, blue: 1.0))
+                .fill(accentColor.opacity(0.15))
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
                         .fill(.ultraThinMaterial)
                 )
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(.blue.opacity(0.5), lineWidth: 2)
+                        .stroke(accentColor.opacity(0.5), lineWidth: 2)
                 )
             
             VStack(spacing: 16) {
@@ -578,7 +579,7 @@ struct CardFace: View {
                             Text(mediaManager.isPlaying ? "Playing..." : "Play Audio")
                         }
                         .font(.subheadline)
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(accentColor)
                     }
                     .padding(.top, 8)
                 }

@@ -26,6 +26,10 @@ struct StatsView: View {
         }
     }
     
+    private var deckColorValue: Color {
+        deckColor(deck.color)
+    }
+    
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -38,11 +42,7 @@ struct StatsView: View {
                 }
                 .padding()
             }
-            .background(LinearGradient(
-                colors: [Color(red: 0.89, green: 0.95, blue: 1.0), Color(red: 0.73, green: 0.87, blue: 0.98)],
-                startPoint: .top,
-                endPoint: .bottom
-            ))
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("Statistics")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -80,7 +80,7 @@ struct StatsView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             HStack(spacing: 12) {
-                StatCard(title: "Total Cards", value: "\(deckStats.totalCards)", color: .blue)
+                StatCard(title: "Total Cards", value: "\(deckStats.totalCards)", color: deckColorValue)
                 StatCard(title: "Mastered", value: "\(deckStats.masteredCards)", color: .green)
             }
             
@@ -127,7 +127,7 @@ struct StatsView: View {
                 Spacer()
             }
             .padding()
-            .background(Color(red: 0.9, green: 0.95, blue: 1.0))
+            .background(Color(red: 0.04, green: 0.3, blue: 0.3).opacity(0.15))
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -208,7 +208,7 @@ struct CardStatsRow: View {
             }
         }
         .padding()
-        .background(Color(red: 0.9, green: 0.95, blue: 1.0))
+        .background(Color(red: 0.04, green: 0.3, blue: 0.3).opacity(0.15))
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
     
@@ -217,7 +217,7 @@ struct CardStatsRow: View {
         case 0...3: return .red
         case 4...6: return .orange
         case 7...9: return .green
-        default: return .blue
+        default: return Color(red: 0.04, green: 0.3, blue: 0.3)
         }
     }
     

@@ -1,0 +1,66 @@
+/* ContentView */
+"Search decks" = "Search decks";
+"My Decks" = "My Decks";
+"decks • cards" = "decks • cards";
+"cards" = "cards";
+"Rename" = "Rename";
+"Delete" = "Delete";
+
+/* AddDeck */
+"Deck Name" = "Deck Name";
+"Enter deck name" = "Enter deck name";
+"Color" = "Color";
+"New Deck" = "New Deck";
+"Cancel" = "Cancel";
+"Save" = "Save";
+
+/* StudyView */
+"All Cards" = "All Cards";
+"Due Today" = "Due Today";
+"Study Mode" = "Study Mode";
+"No Cards in Deck" = "No Cards in Deck";
+"Add First Card" = "Add First Card";
+"Done" = "Done";
+"Card %d of %d" = "Card %d of %d";
+"Edit Card" = "Edit Card";
+"Delete Card" = "Delete Card";
+"Tap card to reveal answer" = "Tap card to reveal answer";
+"Add Card" = "Add Card";
+"Edit" = "Edit";
+"Statistics" = "Statistics";
+"Level" = "Level";
+"Precision" = "Precision";
+"Studied" = "Studied";
+"Correct" = "Correct";
+"Incorrect" = "Incorrect";
+"Front (Question)" = "Front (Question)";
+"Back (Answer)" = "Back (Answer)";
+"Enter question" = "Enter question";
+"Enter answer" = "Enter answer";
+"Add" = "Add";
+"Play Audio" = "Play Audio";
+"Playing..." = "Playing...";
+
+/* StatsView */
+"Summary" = "Summary";
+"Total Cards" = "Total Cards";
+"Mastered" = "Mastered";
+"Due for Review" = "Due for Review";
+"Average Precision" = "Average Precision";
+"Current Streak" = "Current Streak";
+"Longest Streak" = "Longest Streak";
+"Best Precision" = "Best Precision";
+"Reset Statistics" = "Reset Statistics";
+"Are you sure you want to reset all statistics for this deck? This action cannot be undone." = "Are you sure you want to reset all statistics for this deck? This action cannot be undone.";
+"Card Statistics" = "Card Statistics";
+"days" = "days";
+
+/* ImportView */
+"Import Decks" = "Import Decks";
+"Select File" = "Select File";
+"Importing..." = "Importing...";
+"Import Successful" = "Import Successful";
+"Decks imported successfully." = "Decks imported successfully.";
+"Import Error" = "Import Error";
+"Invalid file format. Please select a valid file." = "Invalid file format. Please select a valid file.";
+"OK" = "OK";

@@ -1,0 +1,66 @@
+/* ContentView */
+"Search decks" = "Buscar mazos";
+"My Decks" = "Mis Mazos";
+"decks • cards" = "mazos • tarjetas";
+"cards" = "tarjetas";
+"Rename" = "Renombrar";
+"Delete" = "Eliminar";
+
+/* AddDeck */
+"Deck Name" = "Nombre del Mazo";
+"Enter deck name" = "Ingresa el nombre del mazo";
+"Color" = "Color";
+"New Deck" = "Nuevo Mazo";
+"Cancel" = "Cancelar";
+"Save" = "Guardar";
+
+/* StudyView */
+"All Cards" = "Todas las Tarjetas";
+"Due Today" = "Para Hoy";
+"Study Mode" = "Modo de Estudio";
+"No Cards in Deck" = "No Hay Tarjetas en el Mazo";
+"Add First Card" = "Añadir Primera Tarjeta";
+"Done" = "Hecho";
+"Card %d of %d" = "Tarjeta %d de %d";
+"Edit Card" = "Editar Tarjeta";
+"Delete Card" = "Eliminar Tarjeta";
+"Tap card to reveal answer" = "Toca la tarjeta para ver la respuesta";
+"Add Card" = "Añadir Tarjeta";
+"Edit" = "Editar";
+"Statistics" = "Estadísticas";
+"Level" = "Nivel";
+"Precision" = "Precisión";
+"Studied" = "Estudiadas";
+"Correct" = "Correctas";
+"Incorrect" = "Incorrectas";
+"Front (Question)" = "Frente (Pregunta)";
+"Back (Answer)" = "Reverso (Respuesta)";
+"Enter question" = "Ingresa la pregunta";
+"Enter answer" = "Ingresa la respuesta";
+"Add" = "Añadir";
+"Play Audio" = "Reproducir Audio";
+"Playing..." = "Reproduciendo...";
+
+/* StatsView */
+"Summary" = "Resumen";
+"Total Cards" = "Total de Tarjetas";
+"Mastered" = "Dominadas";
+"Due for Review" = "Para Repasar";
+"Average Precision" = "Precisión Promedio";
+"Current Streak" = "Racha Actual";
+"Longest Streak" = "Mejor Racha";
+"Best Precision" = "Mejor Precisión";
+"Reset Statistics" = "Restablecer Estadísticas";
+"Are you sure you want to reset all statistics for this deck? This action cannot be undone." = "¿Estás seguro de que quieres restablecer todas las estadísticas de este mazo? Esta acción no se puede deshacer.";
+"Card Statistics" = "Estadísticas de Tarjetas";
+"days" = "días";
+
+/* ImportView */
+"Import Decks" = "Importar Mazos";
+"Select File" = "Seleccionar Archivo";
+"Importing..." = "Importando...";
+"Import Successful" = "Importación Exitosa";
+"Decks imported successfully." = "Mazos importados exitosamente.";
+"Import Error" = "Error de Importación";
+"Invalid file format. Please select a valid file." = "Formato de archivo inválido. Por favor selecciona un archivo válido.";
+"OK" = "Aceptar";
