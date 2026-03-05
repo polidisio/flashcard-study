@@ -38,7 +38,7 @@ struct StatsView: View {
                 }
                 .padding()
             }
-            .background(Color.gothicBackground)
+            .background(Color.adaptiveGlassBackground)
             .navigationTitle("Statistics")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -72,7 +72,7 @@ struct StatsView: View {
         VStack(spacing: 12) {
             Text("Summary")
                 .font(.headline)
-                .foregroundStyle(Color.gothicText)
+                .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             HStack(spacing: 12) {
@@ -99,7 +99,7 @@ struct StatsView: View {
         VStack(spacing: 12) {
             Text("Study Streak")
                 .font(.headline)
-                .foregroundStyle(Color.gothicText)
+                .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             HStack {
@@ -111,7 +111,7 @@ struct StatsView: View {
                     Text("\(deckStats.studyStreak) days")
                         .font(.title)
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.gothicText)
+                        .foregroundStyle(.primary)
                     
                     if let lastDate = deckStats.lastStudyDate {
                         Text("Last studied: \(lastDate.formatted(date: .abbreviated, time: .omitted))")
@@ -123,7 +123,7 @@ struct StatsView: View {
                 Spacer()
             }
             .padding()
-            .background(Color.gothicCard)
+            .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
     }
@@ -132,7 +132,7 @@ struct StatsView: View {
         VStack(spacing: 12) {
             Text("Card Statistics")
                 .font(.headline)
-                .foregroundStyle(Color.gothicText)
+                .foregroundStyle(.primary)
                 .frame(maxWidth: .infinity, alignment: .leading)
             
             ForEach(sortedCards) { card in
@@ -174,7 +174,7 @@ struct CardStatsRow: View {
                 Text(card.front)
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundStyle(Color.gothicText)
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
                 
                 Text(card.back)
@@ -204,7 +204,7 @@ struct CardStatsRow: View {
             }
         }
         .padding()
-        .background(Color.gothicCard)
+        .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 8))
     }
     

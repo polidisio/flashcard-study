@@ -16,6 +16,7 @@ struct StudyView: View {
     @State private var editingCardId: UUID?
     @State private var studyMode: StudyMode = .all
     @State private var showingStats = false
+    @Environment(\.colorScheme) var colorScheme
     
     enum StudyMode: String, CaseIterable {
         case all = "All Cards"
@@ -78,17 +79,17 @@ struct StudyView: View {
         VStack(spacing: 16) {
             Image(systemName: "rectangle.on.rectangle.slash")
                 .font(.system(size: 60))
-                .foregroundStyle(Color.gothicAccent)
+                .foregroundStyle(.blue)
             Text("No Cards in Deck")
                 .font(.title2)
             Button("Add First Card") {
                 showingAddCard = true
             }
             .buttonStyle(.borderedProminent)
-            .tint(Color.gothicAccent)
+            .tint(.blue)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.gothicBackground)
+        .background(Color.adaptiveGlassBackground)
         .navigationTitle(deck.name)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -176,7 +177,7 @@ struct StudyView: View {
         .padding()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.gothicBackground)
+        .background(Color.adaptiveGlassBackground)
         .navigationTitle(deck.name)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -325,14 +326,14 @@ struct StudyView: View {
                     .font(.system(size: 50))
             }
             .disabled(currentIndex == 0)
-            .foregroundStyle(currentIndex == 0 ? Color.gray : Color.gothicAccent)
+            .foregroundStyle(currentIndex == 0 ? Color.gray : .blue)
             
             Button { nextCard() } label: {
                 Image(systemName: "chevron.right.circle.fill")
                     .font(.system(size: 50))
             }
             .disabled(currentIndex >= studyCards.count - 1)
-            .foregroundStyle(currentIndex >= studyCards.count - 1 ? Color.gray : Color.gothicAccent)
+            .foregroundStyle(currentIndex >= studyCards.count - 1 ? Color.gray : .blue)
         }
     }
     
@@ -523,10 +524,10 @@ struct CardFace: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
-                .fill(isBack ? Color.gothicCardBack : Color.gothicCard)
+                .fill(.ultraThinMaterial)
                 .overlay(
                     RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color.gothicBorder, lineWidth: 3)
+                        .stroke(.blue.opacity(0.3), lineWidth: 1)
                 )
             
             VStack(spacing: 16) {
@@ -553,7 +554,7 @@ struct CardFace: View {
                 Text(text)
                     .font(.title2)
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(Color.gothicText)
+                    .foregroundStyle(.primary)
                     .padding()
                 
                 if let audioPath = audioPath {
@@ -565,7 +566,7 @@ struct CardFace: View {
                             Text(mediaManager.isPlaying ? "Playing..." : "Play Audio")
                         }
                         .font(.subheadline)
-                        .foregroundStyle(Color.gothicAccent)
+                        .foregroundStyle(.blue)
                     }
                     .padding(.top, 8)
                 }

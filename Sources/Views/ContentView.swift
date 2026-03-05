@@ -7,60 +7,55 @@ struct ContentView: View {
     @State private var selectedDeckIndex: Int? = nil
     @State private var editingDeckIndex: Int? = nil
     @State private var editingDeckName: String = ""
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(Array(deckStore.decks.enumerated()), id: \.element.id) { index, deck in
-                    Button {
-                        selectedDeckIndex = index
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(deck.name)
-                                    .font(.headline)
-                                    .foregroundStyle(Color.gothicText)
-                                Text("\(deck.cards.count) cards")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.secondary)
+            ZStack {
+                LinearGradient(
+                    colors: colorScheme == .dark 
+                        ? [Color(white: 0.08), Color.blue.opacity(0.1)] 
+                        : [Color.white, Color.blue.opacity(0.05)],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+                .ignoresSafeArea()
+                
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        ForEach(Array(deckStore.decks.enumerated()), id: \.element.id) { index, deck in
+                            DeckCardView(
+                                deck: deck,
+                                onTap: { selectedDeckIndex = index },
+                                onEdit: {
+                                    editingDeckIndex = index
+                                    editingDeckName = deck.name
+                                },
+                                onDelete: {
+                                    deckStore.deleteDeck(at: IndexSet(integer: index))
+                                }
+                            )
                         }
                     }
-                    .listRowBackground(Color.gothicCard)
-                    .contextMenu {
-                        Button {
-                            editingDeckIndex = index
-                            editingDeckName = deck.name
-                        } label: {
-                            Label("Rename", systemImage: "pencil")
-                        }
-                    }
-                }
-                .onDelete { offsets in
-                    deckStore.deleteDeck(at: offsets)
+                    .padding()
                 }
             }
-            .listStyle(.plain)
-            .background(Color.gothicBackground)
-            .navigationTitle("Decks")
+            .navigationTitle("My Decks")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
                         showingImport = true
                     } label: {
                         Image(systemName: "square.and.arrow.down")
-                            .foregroundStyle(Color.gothicAccent)
+                            .foregroundStyle(.blue)
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         showingAddDeck = true
                     } label: {
-                        Image(systemName: "plus")
-                            .foregroundStyle(Color.gothicAccent)
+                        Image(systemName: "plus.circle.fill")
+                            .foregroundStyle(.blue)
                     }
                 }
             }
@@ -99,10 +94,54 @@ struct ContentView: View {
     }
 }
 
+struct DeckCardView: View {
+    let deck: Deck
+    var onTap: () -> Void
+    var onEdit: () -> Void
+    var onDelete: () -> Void
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(deck.name)
+                        .font(.headline)
+                        .foregroundStyle(colorScheme == .dark ? .white : .black)
+                    Text("\(deck.cards.count) cards")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.secondary)
+            }
+            .padding()
+            .background(.ultraThinMaterial)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button {
+                onEdit()
+            } label: {
+                Label("Rename", systemImage: "pencil")
+            }
+            Button(role: .destructive) {
+                onDelete()
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
+    }
+}
+
 struct EditDeckNameView: View {
     @Binding var deckName: String
     var onSave: () -> Void
     var onCancel: () -> Void
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         NavigationStack {
@@ -122,6 +161,7 @@ struct EditDeckNameView: View {
                 }
             }
         }
+        .presentationBackground(.ultraThinMaterial)
     }
 }
 

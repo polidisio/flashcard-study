@@ -28,5 +28,6 @@ struct AddDeckView: View {
                 }
             }
         }
+        .presentationBackground(.ultraThinMaterial)
     }
 }
